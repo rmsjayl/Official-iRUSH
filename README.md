@@ -19,6 +19,8 @@ Access the Service Desk through the web interface
 * Node.js
 * Express.js
 * MongoDB
+* ReactJS
+* MODULE CSS
 
 # Contributors
 Ramos, Jay Lord E. (@rmsjayl)
