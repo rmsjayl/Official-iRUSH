@@ -1,0 +1,93 @@
+.register-container {
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.21),
+      rgba(255, 255, 255, 0.093)
+    ),
+    url(../../assets/images/img/USTmaingbldg_bg.jpg);
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.register-container__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 50px;
+}
+
+.register-container__form {
+  background-color: #fff;
+  border-radius: 4px;
+  animation: animatePopUp 0.5s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.48) 0px 2px 8px;
+  width: 30%;
+  padding: 30px;
+}
+
+.user-input__name {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 3px;
+}
+
+.container-user__firstName,
+.container-user__lastName,
+.container-user__emailaddress,
+.container-user__password,
+.container-user__confirmpassword {
+  margin-bottom: 12px;
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.passwordreset-passwordreminder {
+  padding: 2px 0 10px 20px;
+}
+
+.passreminders {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.passreminders li::before {
+  content: "* ";
+  color: red;
+}
+
+.register-container__button {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: auto;
+}
+
+.button-user__register {
+  width: 100%;
+}
+
+.register-container__forgotpass {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.register-container__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes animatePopUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}

@@ -1,0 +1,13 @@
+.error_message {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 20px 0 10px 0;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  color: #ff1a1a;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: 600;
+  /* text-transform: uppercase; */
+}

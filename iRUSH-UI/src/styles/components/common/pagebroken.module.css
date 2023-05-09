@@ -1,0 +1,27 @@
+.pagebroken-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(
+        rgba(254, 192, 15),
+        rgba(255, 226, 144),
+        rgba(255, 255, 255)
+    );
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+}
+
+.pagebroken-container__wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.pagebroken-container__wrapper span {
+    color: rgb(0, 0, 0, 0.5);
+    font-size: 18px;
+}
+.pagebroken-button {
+    padding: 10px 50px;
+}

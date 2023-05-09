@@ -1,0 +1,40 @@
+.common-container__header {
+  display: flex;
+  justify-content: center;
+  padding-top: 25px;
+}
+
+.common-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.common-header__logo {
+  margin-right: 28px;
+}
+
+#common-ustlogoblck {
+  width: 124px;
+  height: 124px;
+}
+
+.common-header--text {
+  font-family: "TrajanPro-Regular";
+}
+
+#commonheader__ust {
+  font-family: "TrajanPro-Regular";
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+#commonheader__ust-sch {
+  font-family: "TrajanPro-Regular";
+  font-size: 35px;
+  letter-spacing: 1px;
+  font-weight: 100;
+  word-spacing: 2px;
+  letter-spacing: 2px;
+}

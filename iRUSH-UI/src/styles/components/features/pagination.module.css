@@ -1,0 +1,30 @@
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.pagination-container__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.show-entries {
+  font-size: 12px;
+  font-family: Poppins-bold;
+  text-transform: uppercase;
+  padding-right: 5px;
+}
+
+.pagination-container__next-button,
+.pagination-container__prev-button {
+  padding: 0px 10px;
+  margin: 0 5px;
+  background-color: rgb(254, 192, 15);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: Poppins-bold;
+}

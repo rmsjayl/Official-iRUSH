@@ -1,0 +1,48 @@
+.dashboard-container {
+  padding: 10px 0;
+}
+
+.dashboard-container__wrapper {
+  padding: 0;
+  display: flex;
+}
+
+.dashboard-container__content__wrapper {
+  display: flex;
+}
+
+.dashboard-container__content {
+  margin: 0;
+}
+
+.dashboard-content__servicereport {
+  padding: 0px 10px 0px 10px;
+  overflow-y: visible;
+}
+
+.content-ticketreport {
+  width: 100%;
+}
+
+.servicereport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.ticketreport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+}
+
+.content-ticketreport__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.filtertickets-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 5px;
+}

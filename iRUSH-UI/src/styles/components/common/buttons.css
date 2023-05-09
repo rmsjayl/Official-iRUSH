@@ -1,0 +1,150 @@
+.btn {
+  font-family: "Poppins";
+  font-weight: 600;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* BUTTON STYLES */
+
+.btn--primary__solid {
+  background: #fec00f;
+  color: #000;
+  border: none;
+  box-shadow: 19px 18px 12px -3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn--secondary__solid {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  box-shadow: 19px 18px 12px -3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn--danger__solid {
+  background-color: #ff1a1a;
+  color: #fff;
+  border: none;
+  box-shadow: 19px 18px 12px -3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn--longhead__solid {
+  background-color: #fec00f;
+  color: #000;
+  border: 1px solid #000;
+  font-weight: 600;
+  box-shadow: 19px 18px 12px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.btn--longhead__success {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  font-weight: 600;
+  box-shadow: 19px 18px 12px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.btn--solid__servicerequest {
+  background: #fec00f;
+  color: #000;
+  border: none;
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn--solid__reopenticket {
+  background: rgb(254, 192, 15);
+  color: #000;
+  border: none;
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn--solid__filterbydate {
+  margin: 0 10px;
+  border-radius: 4px;
+  border: none;
+  background: rgb(254, 192, 15);
+}
+
+/* HOVER FUNCTIONALITIES */
+.btn--primary__solid:hover {
+  background-color: rgba(254, 192, 15, 0.82);
+}
+
+.btn--secondary__solid:hover {
+  background-color: rgba(0, 0, 0, 0.82);
+}
+
+.btn--danger__solid:hover {
+  background-color: rgba(255, 26, 26, 0.82);
+}
+
+.btn--longhead__solid:hover {
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #fff;
+}
+
+.btn--longhead__success:hover {
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #fff;
+}
+
+.btn--solid__servicerequest:hover {
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #fff;
+}
+
+.btn--solid__reopenticket:hover {
+  background-color: rgba(0, 0, 0, 0.82);
+  color: #fff;
+}
+
+/* BUTTON SIZES */
+.btn--medium__average {
+  padding: 7px 14px;
+  font-size: 16px;
+}
+
+.btn--medium {
+  padding: 7px 14px;
+  font-size: 14px;
+}
+
+.btn--large {
+  padding: 20px 40px;
+  font-size: 18px;
+}
+
+.btn--servicereqs {
+  padding: 7px 40px;
+  font-size: 14px;
+}
+
+.btn--medium__filter {
+  padding: 3px 10px;
+  font-size: 14px;
+}

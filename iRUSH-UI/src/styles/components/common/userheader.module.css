@@ -1,0 +1,67 @@
+@font-face {
+  font-family: iRUSHfont;
+  src: url("../../../assets/fonts/trajanpro-regular-webfont.woff2");
+}
+
+.header-container {
+  padding: 25px;
+  background: rgb(254, 192, 15);
+}
+
+.header-container__wrapper {
+  display: flex;
+}
+
+.header-container__details {
+  margin-left: 10px;
+}
+
+.header-clerkName__container {
+  font-size: 18px;
+  text-transform: uppercase;
+  font-family: iRUSHfont;
+  letter-spacing: 1px;
+}
+
+.header-clerkEmail__container {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-family: iRUSHfont;
+  letter-spacing: 1px;
+}
+
+.header-clerkRole__container {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-family: iRUSHfont;
+  letter-spacing: 1px;
+}
+
+#profileicon {
+  height: 50px;
+  cursor: pointer;
+}
+
+.header-container__profileNav {
+  position: absolute;
+  background-color: #fff;
+  box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-container__profileNav__item__link {
+  background-color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 8px 40px;
+  transition: 0.2s;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.header-container__profileNav__item__link:hover {
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}

@@ -1,0 +1,12 @@
+.component-container {
+  display: flex;
+}
+
+.component-container__wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.component-header {
+  width: 100%;
+}

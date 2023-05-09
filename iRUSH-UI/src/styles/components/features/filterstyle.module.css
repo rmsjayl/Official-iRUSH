@@ -1,0 +1,128 @@
+.filter-container {
+  padding: 0 10px;
+  margin-top: 5px;
+}
+
+.paginationfilter-container {
+  padding: 0 10px;
+  margin-top: 5px;
+}
+
+.categoryfilter-container {
+  padding: 0 10px;
+  margin-top: 5px;
+}
+
+.filter-container span,
+.categoryfilter-container span {
+  padding: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.filter-select {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  outline: none;
+  padding: 0px 5px;
+  height: 28px;
+}
+
+.form-control__date {
+  outline: none;
+  height: 28px;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field {
+  visibility: visible;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+::-webkit-datetime-edit-day-field {
+  visibility: visible;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+::-webkit-datetime-edit-year-field {
+  visibility: visible;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+::-webkit-datetime-edit-text {
+  visibility: visible;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.datesearch-button {
+  padding: 0 10px;
+  margin: 0 5px;
+  background-color: rgb(254, 192, 15);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+input[type="date"] {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 0px 5px;
+  height: 28px;
+}
+
+.pagination-limitselect {
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  outline: none;
+}
+
+option[value] {
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+}
+
+.search-container {
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.search-container__wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+}
+
+.search-icon {
+  width: 16px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.generatereport-container {
+  padding-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.generatereport {
+  padding: 0 5px;
+}
+
+.generatereport-container span {
+  padding: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}

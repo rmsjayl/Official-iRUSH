@@ -1,0 +1,76 @@
+.userloading-container > h5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.servicereport-userscontainer {
+  overflow-y: scroll;
+  height: calc(100vh - 165px);
+  margin-top: 20px;
+}
+
+.servicereport-header {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.servicereport-header h4 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.servicereport-userscontainer::-webkit-scrollbar,
+.ticketreport-ticketcontainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+.servicereport-userscontainer::-webkit-scrollbar-thumb,
+.ticketreport-ticketcontainer::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+}
+
+.servicereport-users {
+  padding: 15px 20px;
+  margin: 0 20px 15px 10px;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+}
+
+.servicereport-users__name {
+  font-size: 15px;
+  text-transform: uppercase;
+  font-family: Poppins-bold;
+}
+
+.servicereport-users__role,
+.servicereport-users__email {
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(0, 0, 0, 0.5);
+  font-weight: 600;
+}
+.servicereport-users__details {
+  width: 100%;
+}
+.servicerport-users__otherdetails {
+  margin-top: 28px;
+  width: 100%;
+}
+
+.servicereport-otherdetails__sla {
+  font-size: 12px;
+  color: rgb(0, 0, 0, 0.5);
+  font-weight: 600;
+}
+
+.servicereport_label {
+  padding-right: 10px;
+  font-size: 12px;
+  color: rgb(0, 0, 0);
+  font-weight: 600;
+}

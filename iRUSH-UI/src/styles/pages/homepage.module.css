@@ -1,0 +1,146 @@
+@font-face {
+    font-family: "TrajanPro-Regular";
+    src: url(../../assets/fonts/trajanpro-regular-webfont.woff2);
+}
+
+.top-navigation {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0.2)
+    );
+    padding: 2rem 3rem;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-ust {
+    display: flex;
+}
+
+.header-ust__name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.3rem;
+    letter-spacing: 0.1rem;
+    padding-left: 25px;
+}
+
+.header {
+    text-transform: uppercase;
+    color: rgb(255, 255, 255);
+    font-family: "TrajanPro-Regular";
+    user-select: none;
+}
+
+.pontificalroyal,
+.catholicuniversity {
+    font-size: 10px;
+}
+
+.university {
+    font-size: 30px;
+}
+
+.button-functionalities {
+    display: flex;
+}
+
+.header-button__navigation {
+    margin: 0 8px;
+}
+
+.homepage-container {
+    height: 100%;
+    width: 100%;
+}
+
+.homepage-container__wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.landing-page__image {
+    padding: 50px;
+    background-color: #fec00f;
+}
+
+#ustmainbldg {
+    position: relative;
+    right: -120px;
+    box-shadow: -24px 27px 19px -8px rgba(0, 0, 0, 0.4);
+    width: 500px;
+    height: 500px;
+}
+
+.landing-page__content {
+    animation: animatePopUp 1s ease-in-out;
+    display: flex;
+}
+
+.landing-page--content__headers {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-header {
+    font-family: "TrajanPro-Regular";
+    text-transform: uppercase;
+    font-size: 64px;
+}
+
+.content-paragraphs > p {
+    font-family: "TrajanPro-Regular";
+    text-transform: uppercase;
+    font-size: 24px;
+    text-align: center;
+    padding: 20px 50px;
+    width: 680px;
+}
+
+.content-buttons {
+    width: 70%;
+    padding: 20px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.footer-container {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0.5)
+    );
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer-container__copyright,
+.footer-container__poweredby {
+    padding: 25px 25px 25px 40px;
+    font-size: 8px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: "Poppins";
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+@keyframes animatePopUp {
+    0% {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}

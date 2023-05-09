@@ -1,0 +1,80 @@
+.navbar-container {
+  height: 100%;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0) 0px 0px 1px 0px;
+}
+
+.navbar-container__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.adminnavbar-icons__menu {
+  padding: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.adminnavbar-icons__widgets {
+  text-align: center;
+}
+
+.nav-link__active #navbar-widgets__container {
+  margin: 8px;
+  color: #000;
+  background-color: rgb(254, 192, 15);
+  border-radius: 4px;
+}
+
+.nav-link {
+  color: #000;
+}
+
+.navbar-widgets__active {
+  padding: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.hidden {
+  display: none;
+}
+
+.navbar-widgets__passive {
+  padding: 15px;
+  cursor: pointer;
+}
+
+.navbar-widgets__active:hover,
+.navbar-widgets__passive:hover {
+  transition: 0.3s;
+  color: #000;
+  margin: 8px;
+  background-color: rgb(254, 192, 15);
+  border-radius: 4px;
+}
+
+.navbar-widgets__description {
+  width: 900px;
+}
+
+.navbar-widgets__nodescription {
+  width: 20px;
+}
+
+.navbar-icons__ustlogo {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.icon-ustlogo__container {
+  position: absolute;
+  bottom: 23px;
+  display: flex;
+}
+
+#navbar-ustlogo {
+  height: 53px;
+  width: 49px;
+}
