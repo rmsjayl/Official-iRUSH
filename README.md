@@ -11,7 +11,9 @@ The primary objective of this project is to design and implement a Service Desk 
 This repository contains the code and documentation for the Service Desk implementation. To use the system, follow the steps below:
 
 Clone the repository to your local machine
+
 git clone https://github.com/rmsjayl/Official-iRUSH.git
+
 Open the VS CODE STUDIO
 Open a terminal
 npm start
@@ -26,7 +28,7 @@ Access the Service Desk through the web interface
 * ReactJS
 * MODULE CSS
 
-# Contributors
+# Contributor/s
 Ramos, Jay Lord E. (@rmsjayl)
 
 # LICENSE
