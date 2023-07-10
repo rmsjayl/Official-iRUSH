@@ -15,8 +15,10 @@ Clone the repository to your local machine
 git clone https://github.com/rmsjayl/Official-iRUSH.git
 
 Open the VS CODE STUDIO
-Open a terminal
-npm start
+
+Right-click the folders and proceed with "Open in integrated Terminal"
+
+Run the command "npm start"
 
 Run the application
 Access the Service Desk through the web interface
