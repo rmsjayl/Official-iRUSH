@@ -10,7 +10,7 @@ The primary objective of this project is to design and implement a Service Desk 
 # HOW TO USE
 This repository contains the code and documentation for the Service Desk implementation. To use the system, follow the steps below:
 
-Clone the repository to your local machine
+Clone the repository to your local machine:
 
 git clone https://github.com/rmsjayl/Official-iRUSH.git
 
