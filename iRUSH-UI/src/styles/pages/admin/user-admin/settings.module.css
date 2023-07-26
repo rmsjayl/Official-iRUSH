@@ -1,0 +1,23 @@
+.settingsreport-container {
+  padding: 10px 0;
+}
+
+.settingsreport-container__wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.settingsreport-navigation {
+  width: 20%;
+}
+
+.settingsreport-content {
+  width: 100%;
+}
+
+.noselected-option__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

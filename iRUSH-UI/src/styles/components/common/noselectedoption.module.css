@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  user-select: none;
+}
+
+#usttiger {
+  width: 105px;
+  height: 150px;
+}

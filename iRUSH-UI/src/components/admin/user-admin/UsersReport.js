@@ -1,6 +1,6 @@
 import React from "react";
-import USERSSTYLE from "../../../styles/components/admin/user-admin/users.module.css";
-import LOADINGSTYLE from "../../../styles/global/loading.module.css";
+import USERSSTYLE from "styles/components/admin/user-admin/users.module.css";
+import LOADINGSTYLE from "styles/global/loading.module.css";
 
 const UsersReport = ({ users, loading }) => {
   return (
@@ -9,7 +9,7 @@ const UsersReport = ({ users, loading }) => {
         <>
           {users.length === 0 && (
             <div className={USERSSTYLE["userloading-container"]}>
-              <h5> NO USERS DATA... </h5>
+              <h5> NO USERS YET TO DISPLAY... </h5>
             </div>
           )}
           <>

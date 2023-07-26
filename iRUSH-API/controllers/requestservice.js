@@ -205,10 +205,34 @@ exports.requestservice = async (req, res) => {
 
     await sendEmail(client.email, "Request for a Service", mail);
 
+    return res.redirect(
+      301,
+      `/api/clients/requestservicesuccess/${client._id}`
+    );
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+
+exports.requestservicesuccess = async (req, res) => {
+  try {
+    const requester = await Client.findOne({ _id: req.params.id });
+
+    if (!requester) {
+      return res.status(400).send({
+        success: false,
+        message: "Requester not found",
+      });
+    }
+
     res.status(200).send({
       success: true,
-      message:
-        "An Email will be sent to your account to start requesting a new service.",
+      message: "Thank you for your interest in our services.",
+      data: requester,
     });
   } catch (error) {
     return res.status(500).send({

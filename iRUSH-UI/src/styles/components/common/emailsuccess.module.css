@@ -1,0 +1,66 @@
+.container-emailverify {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.emailverify--container__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.emailverifycontent__tiger {
+  margin-right: 50px;
+}
+
+#emailverify-tiger {
+  width: 184px;
+  height: 284px;
+}
+
+.emailverifycontent__texts {
+  text-align: center;
+}
+
+.serviceformsuccesscontent-text__header h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.emailverifycontent-text__header h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.emailverifycontent-text__paragraph {
+  margin-top: 20px;
+}
+
+.emailverifycontent-text__paragraph p {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.42);
+  letter-spacing: 0.5px;
+}
+
+.emailverifycontent-text__buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.emailverify-button {
+  margin-top: 30px;
+}
+
+.btn-redirect {
+  font-size: 25px;
+}

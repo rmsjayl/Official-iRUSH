@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import NAVBARSTYLE from "../../styles/components/common/navbar.module.css";
+import { NavLink } from "react-router-dom";
+import NAVBARSTYLE from "styles/components/common/navbar.module.css";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ViewHeadlineOutlinedIcon from "@mui/icons-material/ViewHeadlineOutlined";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
-import USTLOGO from "../../assets/images/img/UST_logoblack.png";
+import USTLOGO from "assets/images/img/UST_logoblack.png";
+import Tooltip from "./Tooltip";
 
 const Navbar = ({ userRole }) => {
   const adminNavbarData = [
     {
       id: 1,
-      title: "Dashboard",
+      description: "Dashboard",
       icon: <DashboardIcon />,
       link: "/admin/dashboard",
       description: "DASHBOARD",
@@ -67,7 +68,7 @@ const Navbar = ({ userRole }) => {
   const ItSupportNavbarData = [
     {
       id: 1,
-      title: "Dashboard",
+      description: "Dashboard",
       icon: <DashboardIcon />,
       link: "/itsupport/dashboard",
       description: "DASHBOARD",
@@ -81,7 +82,6 @@ const Navbar = ({ userRole }) => {
     },
   ];
 
-  const navigate = useNavigate();
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => {
     setSidebar(!sidebar);
@@ -101,35 +101,63 @@ const Navbar = ({ userRole }) => {
             {userRole === "USER_ADMIN" || userRole === "USER_SUPERADMIN"
               ? adminNavbarData.map((data, index) => {
                   return (
-                    <NavLink
-                      className={({ isActive }) =>
-                        isActive
-                          ? `${NAVBARSTYLE["nav-link__active"]}`
-                          : `${NAVBARSTYLE["nav-link"]}`
-                      }
-                      to={data.link}
-                      key={index}
-                    >
-                      <div
-                        className={
-                          sidebar
-                            ? `${NAVBARSTYLE["navbar-widgets__active"]}`
-                            : `${NAVBARSTYLE["navbar-widgets__passive"]}`
+                    <React.Fragment key={index}>
+                      <NavLink
+                        className={({ isActive }) =>
+                          isActive
+                            ? `${NAVBARSTYLE["nav-link__active"]}`
+                            : `${NAVBARSTYLE["nav-link"]}`
                         }
-                        id={NAVBARSTYLE["navbar-widgets__container"]}
+                        to={data.link}
+                        key={index}
                       >
-                        <li>{data.icon}</li>
-                        <h6
-                          className={
-                            sidebar
-                              ? `${NAVBARSTYLE["active"]}`
-                              : `${NAVBARSTYLE["hidden"]}`
-                          }
-                        >
-                          {data.description}
-                        </h6>
-                      </div>
-                    </NavLink>
+                        {!sidebar ? (
+                          <Tooltip tooltipText={data.description}>
+                            <div
+                              className={
+                                sidebar
+                                  ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                                  : `${NAVBARSTYLE["navbar-widgets__passive"]}`
+                              }
+                              id={NAVBARSTYLE["navbar-widgets__container"]}
+                            >
+                              <span>{data.icon}</span>
+
+                              <h6
+                                className={
+                                  sidebar
+                                    ? `${NAVBARSTYLE["active"]}`
+                                    : `${NAVBARSTYLE["hidden"]}`
+                                }
+                              >
+                                {data.description}
+                              </h6>
+                            </div>
+                          </Tooltip>
+                        ) : (
+                          <div
+                            className={
+                              sidebar
+                                ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                                : `${NAVBARSTYLE["navbar-widgets__passive"]}`
+                            }
+                            id={NAVBARSTYLE["navbar-widgets__container"]}
+                          >
+                            <span>{data.icon}</span>
+
+                            <h6
+                              className={
+                                sidebar
+                                  ? `${NAVBARSTYLE["active"]}`
+                                  : `${NAVBARSTYLE["hidden"]}`
+                              }
+                            >
+                              {data.description}
+                            </h6>
+                          </div>
+                        )}
+                      </NavLink>
+                    </React.Fragment>
                   );
                 })
               : userRole === "CLERK_ITSUPPORT"
@@ -144,25 +172,51 @@ const Navbar = ({ userRole }) => {
                       to={data.link}
                       key={index}
                     >
-                      <div
-                        className={
-                          sidebar
-                            ? `${NAVBARSTYLE["navbar-widgets__active"]}`
-                            : `${NAVBARSTYLE["navbar-widgets__passive"]}`
-                        }
-                        id={NAVBARSTYLE["navbar-widgets__container"]}
-                      >
-                        <li>{data.icon}</li>
-                        <h6
+                      {!sidebar ? (
+                        <Tooltip tooltipText={data.description}>
+                          <div
+                            className={
+                              sidebar
+                                ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                                : `${NAVBARSTYLE["navbar-widgets__passive"]}`
+                            }
+                            id={NAVBARSTYLE["navbar-widgets__container"]}
+                          >
+                            <span>{data.icon}</span>
+
+                            <h6
+                              className={
+                                sidebar
+                                  ? `${NAVBARSTYLE["active"]}`
+                                  : `${NAVBARSTYLE["hidden"]}`
+                              }
+                            >
+                              {data.description}
+                            </h6>
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <div
                           className={
                             sidebar
-                              ? `${NAVBARSTYLE["active"]}`
-                              : `${NAVBARSTYLE["hidden"]}`
+                              ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                              : `${NAVBARSTYLE["navbar-widgets__passive"]}`
                           }
+                          id={NAVBARSTYLE["navbar-widgets__container"]}
                         >
-                          {data.description}
-                        </h6>
-                      </div>
+                          <span>{data.icon}</span>
+
+                          <h6
+                            className={
+                              sidebar
+                                ? `${NAVBARSTYLE["active"]}`
+                                : `${NAVBARSTYLE["hidden"]}`
+                            }
+                          >
+                            {data.description}
+                          </h6>
+                        </div>
+                      )}
                     </NavLink>
                   );
                 })
@@ -178,25 +232,51 @@ const Navbar = ({ userRole }) => {
                       to={data.link}
                       key={index}
                     >
-                      <div
-                        className={
-                          sidebar
-                            ? `${NAVBARSTYLE["navbar-widgets__active"]}`
-                            : `${NAVBARSTYLE["navbar-widgets__passive"]}`
-                        }
-                        id={NAVBARSTYLE["navbar-widgets__container"]}
-                      >
-                        <li>{data.icon}</li>
-                        <h6
+                      {!sidebar ? (
+                        <Tooltip tooltipText={data.description}>
+                          <div
+                            className={
+                              sidebar
+                                ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                                : `${NAVBARSTYLE["navbar-widgets__passive"]}`
+                            }
+                            id={NAVBARSTYLE["navbar-widgets__container"]}
+                          >
+                            <span>{data.icon}</span>
+
+                            <h6
+                              className={
+                                sidebar
+                                  ? `${NAVBARSTYLE["active"]}`
+                                  : `${NAVBARSTYLE["hidden"]}`
+                              }
+                            >
+                              {data.description}
+                            </h6>
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <div
                           className={
                             sidebar
-                              ? `${NAVBARSTYLE["active"]}`
-                              : `${NAVBARSTYLE["hidden"]}`
+                              ? `${NAVBARSTYLE["navbar-widgets__active"]}`
+                              : `${NAVBARSTYLE["navbar-widgets__passive"]}`
                           }
+                          id={NAVBARSTYLE["navbar-widgets__container"]}
                         >
-                          {data.description}
-                        </h6>
-                      </div>
+                          <span>{data.icon}</span>
+
+                          <h6
+                            className={
+                              sidebar
+                                ? `${NAVBARSTYLE["active"]}`
+                                : `${NAVBARSTYLE["hidden"]}`
+                            }
+                          >
+                            {data.description}
+                          </h6>
+                        </div>
+                      )}
                     </NavLink>
                   );
                 })

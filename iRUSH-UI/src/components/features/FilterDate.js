@@ -1,14 +1,24 @@
 import React from "react";
-import FILTERSTYLE from "../../styles/components/features/filterstyle.module.css";
+import FILTERSTYLE from "styles/components/features/filterstyle.module.css";
 import moment from "moment";
 
 const FilterDate = ({ setDateFrom, setDateTo }) => {
-  const onSelectChangeDateFrom = ({ currentTarget: input }) => {
-    setDateFrom({ dateFrom: input.value });
+  const handleChangeDateFrom = (e) => {
+    const formattedDate = moment(e.target.value).format("YYYY-MM-DD");
+    setDateFrom({ dateFrom: formattedDate });
+
+    if (e.target.value === "") {
+      setDateFrom({ dateFrom: new Date(0) });
+    }
   };
 
-  const onSelectChangeDateTo = ({ currentTarget: input }) => {
-    setDateTo({ dateTo: input.value });
+  const handleChangeDateTo = (e) => {
+    const formattedDate = moment(e.target.value).format("YYYY-MM-DD");
+    setDateTo({ dateTo: formattedDate });
+
+    if (e.target.value === "") {
+      setDateTo({ dateTo: new Date() });
+    }
   };
 
   return (
@@ -20,14 +30,14 @@ const FilterDate = ({ setDateFrom, setDateTo }) => {
             <input
               type="date"
               className={FILTERSTYLE["formdate-input"]}
-              onChange={onSelectChangeDateFrom}
+              onChange={handleChangeDateFrom}
               max={moment().format("YYYY-MM-DD")}
             />
             <span> To: </span>
             <input
               type="date"
               className={FILTERSTYLE["formdate-input"]}
-              onChange={onSelectChangeDateTo}
+              onChange={handleChangeDateTo}
               max={moment().format("YYYY-MM-DD")}
             />
           </div>

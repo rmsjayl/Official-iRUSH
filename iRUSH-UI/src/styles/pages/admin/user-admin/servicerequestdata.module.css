@@ -1,0 +1,159 @@
+.requestedservice-container__content {
+  margin: 0;
+}
+
+.header_viewingservicerequest {
+  padding: 50px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.header_viewingservicerequest h3 {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.container-servicerequest__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 200px;
+}
+
+.container-servicerequest__loading h4 {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.content-requestedservicerequest-details {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  padding: 2px 4px;
+}
+
+.requestedservicerequest-details__requester {
+  padding: 0px 35px;
+}
+
+.requestedservicerequest-servicerequestcontent {
+  padding: 0px 35px;
+  height: calc(75vh - 35px);
+  width: 100%;
+  overflow: auto;
+}
+
+.requestedservicerequest-servicerequestcontent::-webkit-scrollbar {
+  width: 5px;
+}
+
+.requestedservicerequest-servicerequestcontent::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+  padding: 2px;
+}
+
+.requester-details__email,
+.requester-details__name,
+.requester-details__unit,
+.requester-details__contact,
+.requester-details__category,
+.requester-details__subject,
+.requester-details__description,
+.requester-details__referenceno,
+.requester-details__assingto,
+.requester-details__rejectedby,
+.requester-details__reason {
+  margin: 15px 0;
+}
+
+.requester-details__createdlast,
+.requester-details__rejectedat {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.requester-details__createdlast label,
+.requester-details__rejectedat label .requester-details__reason label {
+  /* font-weight: 600; */
+  font-size: 14px;
+  padding: 2px;
+}
+
+#label-createdlast,
+#label-rejectedat {
+  font-weight: 700;
+}
+
+#category-container {
+  height: 150px;
+}
+
+.requester-details__email label,
+.requester-details__name label,
+.requester-details__unit label,
+.requester-details__contactnumber label,
+.requester-details__category label,
+.requester-details__subject label,
+.requester-details__description label,
+.requester-details__referenceno label,
+.requester-details__assingto label,
+.requester-details__rejectedby label,
+.requester-details__reason label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.requester-details__container {
+  padding: 5px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.reassignservicerequest-container__wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.reassigservicerequesttoclerk-dropdown {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 25px 10px 0;
+}
+
+.reassigservicerequesttoclerk-dropdown label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#servicerequestRejected-details {
+  color: red;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.confirmticket-container__assign {
+  display: block;
+  width: 22rem;
+}
+
+.confirmticket-container__assign--wrapper {
+}
+
+.submitform-container__btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-btns__wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 0;
+  gap: 12px;
+}

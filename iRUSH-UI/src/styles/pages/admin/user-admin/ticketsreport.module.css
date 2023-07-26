@@ -1,0 +1,23 @@
+.tikcetreport-container {
+  padding: 10px 0;
+}
+
+.ticketreport-container__wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ticketreport-navigation {
+  width: 20%;
+}
+
+.ticketreport-content {
+  width: 100%;
+}
+
+.noselected-option__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

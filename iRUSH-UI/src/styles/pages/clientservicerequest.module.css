@@ -1,0 +1,312 @@
+.servicerequest-container {
+  background-image: linear-gradient(
+    rgba(254, 192, 15),
+    rgba(255, 226, 144),
+    rgba(255, 255, 255)
+  );
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.servicerequest-container__wrapper {
+  padding: 50px 210px;
+}
+
+.servicerequest-container__form {
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 5px 15px;
+  padding: 50px 100px;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+.servicerequest-container__form h2 {
+  letter-spacing: 0.5px;
+}
+
+.servicerequest-form {
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.servicerequest-form__note {
+  float: right;
+  font-style: italic;
+  padding: 10px 20px;
+}
+
+.servicerequest-note__reminder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+.servicerequest-note__reminder h6 {
+  font-weight: 600;
+}
+
+#asterisk {
+  color: #ff0000;
+  margin-right: 4px;
+  font-size: 14px;
+}
+
+.servicerequest-form__clientdetails {
+  margin: 50px 0 0 0;
+  padding: 0;
+}
+
+.clientdetails-firstlayer,
+.clientdetails-secondlayer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.container-clientdetails__name,
+.container-clientdetails__contactnum,
+.container-clientdetails__unit,
+.container-clientdetails__course,
+.container-clientdetails__uploadpdf {
+  width: 50%;
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.container-clientdetails__ticketdescription {
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.clientdetails__name,
+.clientdetails__contactnumber,
+.clientdetails__unit,
+.clientdetails__course,
+.clientdetails__category,
+.clientdetails__subject,
+.clientdetails__description,
+.clientdetails__upload,
+.clientdetails__ticketdescription {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.cotainer-name__clientinput,
+.cotainer-contactnumber__clientinput,
+.cotainer-unit__clientinput,
+.cotainer-course__clientinput,
+.cotainer-ticketdiscription__clientinput {
+  padding: 5px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cotainer-category__clientinput,
+.cotainer-subject__clientinput {
+  padding: 5px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+.requester-details__description,
+.cotainer-description__clientinput,
+.cotainer-ticketdiscription__clientinput {
+  padding: 5px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  height: 150px;
+}
+
+.clientcategory-input {
+  width: 100%;
+}
+
+.form-client__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: transparent;
+}
+
+.clientdetails-thirdlayer,
+.clientdetails-fourthlayer,
+.clientdetails-fifthlayer {
+  width: 100%;
+}
+
+.container-clientdetails__category,
+.container-clientdetails__subject,
+.container-clientdetails__description {
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.form-client__input--category,
+.form-client__input--subject,
+.form-client__input--description,
+.form-client__input--upload {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background-color: transparent;
+}
+
+.container-clientdetails__formbutton {
+  padding: 40px 0;
+  width: 100%;
+}
+
+.clientdetails-sixthlayer {
+  display: block;
+}
+
+.clientdetails__formbutton {
+  float: right;
+}
+
+.cotainer-upload__clientinput {
+  padding: 5px 0px;
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.reopenticket-container {
+  background-image: linear-gradient(
+    rgba(254, 192, 15),
+    rgba(255, 226, 144),
+    rgba(255, 255, 255)
+  );
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.reopenticket-container__wrapper {
+  padding: 50px 210px;
+}
+
+.reopenticket-container__header {
+  display: flex;
+  justify-content: center;
+}
+
+.reopenticket-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.reopenticket-header__logo {
+  margin-right: 28px;
+}
+
+#reopenticket-ustlogoblck {
+  width: 124px;
+  height: 124px;
+}
+
+.reopenticket-header--text {
+  font-family: iRUSHfont;
+}
+
+#reopenticketheader__ust {
+  font-family: iRUSHfont;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+#reopenticketheader__ust-sch {
+  font-family: iRUSHfont;
+  font-size: 35px;
+  letter-spacing: 1px;
+  font-weight: 100;
+  word-spacing: 2px;
+  letter-spacing: 2px;
+}
+
+.reopenticketrequest-container__form {
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+.reopenticketrequest-container__form h2 {
+  letter-spacing: 0.5px;
+}
+
+.requestedtickets-table__form {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.requestedticket-datatablelist {
+  margin-top: 30px;
+}
+
+.requestedticket-datatablelist__table {
+  width: 100%;
+}
+
+.reopentickettable-container__tickets {
+  width: 100%;
+}
+
+.reopentableticket-header {
+  background-color: #fff;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.reopentableheader-title {
+  padding: 20px 25px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.reopenticket-tablerow {
+  width: 100%;
+  font-size: 14px;
+}
+
+.requestedtickets-container__tablebody {
+  padding: 10px 0;
+  background-color: #fff;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td {
+  text-align: center;
+}
+
+.reopentickettable-cell {
+  padding: 20px 0;
+}
+
+.reopenticket-status__container {
+  display: flex;
+  justify-content: flex-end;
+  color: #ff0000;
+  font-weight: 600;
+  font-size: 14px;
+}

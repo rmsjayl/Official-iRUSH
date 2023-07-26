@@ -1,5 +1,5 @@
 import React from "react";
-import PAGINATIONSTYLE from "../../styles/components/features/pagination.module.css";
+import PAGINATIONSTYLE from "styles/components/features/pagination.module.css";
 import Textfield from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 

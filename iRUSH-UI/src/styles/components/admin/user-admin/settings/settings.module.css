@@ -1,0 +1,74 @@
+.content-settingsreport {
+  height: calc(100vh - 130px);
+  overflow: auto;
+  margin: 0px 5px;
+}
+
+.servicereport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.content-settingsreport__container {
+  margin: 10px 5px;
+}
+
+.content-settingsreport__container::-webkit-scrollbar,
+.content-settingsreport::-webkit-scrollbar {
+  width: 5px;
+}
+
+.content-settingsreport__container::-webkit-scrollbar-thumb,
+.content-settingsreport::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+}
+
+.settingsreport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+}
+
+.content-settingsreport__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.filtersettingss-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 5px;
+}
+
+.settingsreport-graphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 25px 0;
+}
+
+.report-chart__SLA {
+  width: auto;
+}
+
+.report-chart__priorityandstatus {
+  display: flex;
+}
+
+.table-usersettings__btn-nonload {
+  display: none;
+}
+
+.table-usersettings__btn-loaded {
+  margin: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filtersettings-firstcolumn {
+  width: 30%;
+}

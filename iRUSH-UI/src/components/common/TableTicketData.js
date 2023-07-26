@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import LOADINGSTYLE from "../../../styles/global/loading.module.css";
-import TABLESTYLE from "../../../styles/global/table.module.css";
-import SORTICON from "../../../assets/images/svg/sort.svg";
+import LOADINGSTYLE from "styles/global/loading.module.css";
+import TABLESTYLE from "styles/global/table.module.css";
+import SORTICON from "assets/images/svg/sort.svg";
 import moment from "moment";
 
-const TicketLists = ({
+const TableTicketData = ({
   header,
   ticketLoading,
   dataTickets,
   setDataTickets,
+  role,
+  showStatus,
 }) => {
   const [order, setOrder] = useState("ASC");
 
@@ -59,11 +61,13 @@ const TicketLists = ({
   };
 
   //get the first characters of each word in ticket category
-  const getFirstChar = (ticketCategory) => {
-    const splitStr = ticketCategory.split(" ");
+  const getFirstChar = (data) => {
+    const splitStr = data.split(" ");
+    const valuesToReplace = ["OF", "AND", "THE", "of", "and", "the"];
+    const pattern = new RegExp(valuesToReplace.join("|"), "gi");
     let firstChar = "";
     for (let i = 0; i < splitStr.length; i++) {
-      firstChar += splitStr[i].charAt(0);
+      firstChar += splitStr[i].replace(pattern, "").charAt(0);
     }
     return firstChar;
   };
@@ -174,23 +178,25 @@ const TicketLists = ({
                             />
                           </span>
                         </th>
-                        <th className={TABLESTYLE["tableheader-title"]}>
-                          Status
-                          <span>
-                            <img
-                              id={TABLESTYLE["sortIcon"]}
-                              src={SORTICON}
-                              alt=""
-                              onClick={() => sorting("status")}
-                              style={{
-                                cursor: "pointer",
-                              }}
-                            />
-                          </span>
-                        </th>
+                        {!showStatus ? null : (
+                          <th className={TABLESTYLE["tableheader-title"]}>
+                            Status
+                            <span>
+                              <img
+                                id={TABLESTYLE["sortIcon"]}
+                                src={SORTICON}
+                                alt=""
+                                onClick={() => sorting("status")}
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </span>
+                          </th>
+                        )}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className={TABLESTYLE["tickettable-tablebody"]}>
                       {dataTickets.map((ticket, index) => {
                         const { _id: id } = ticket;
                         return (
@@ -205,11 +211,18 @@ const TicketLists = ({
                                 color: "#000",
                               }}
                               onClick={() =>
-                                (window.location.pathname = `/tickets/${id}`)
+                                role === "USER_SUPERADMIN" ||
+                                role === "USER_ADMIN"
+                                  ? (window.location.href = `/admin/tickets/${id}`)
+                                  : role === "CLERK_HELPDESKSUPPORT"
+                                  ? (window.location.href = `/helpdesksupport/tickets/${id}`)
+                                  : role === "CLERK_ITSUPPORT"
+                                  ? (window.location.href = `/itsupport/tickets/${id}`)
+                                  : null
                               }
                             >
                               {ticket.status === "Rejected" ? (
-                                <strong>
+                                <span>
                                   <span
                                     style={{
                                       color: "#d61c20",
@@ -220,19 +233,19 @@ const TicketLists = ({
                                       ticket.ticketCategory
                                     ).toUpperCase()}
                                   </span>
-                                </strong>
+                                </span>
                               ) : (
-                                <strong>
+                                <span>
                                   {ticket.ticketNo} -{" "}
                                   {getFirstChar(
                                     ticket.ticketCategory
                                   ).toUpperCase()}
-                                </strong>
+                                </span>
                               )}
                             </td>
                             <td className={TABLESTYLE["tickettable-cell"]}>
                               {ticket.status === "Rejected" ? (
-                                <strong>
+                                <span>
                                   <span
                                     style={{
                                       color: "#d61c20",
@@ -240,14 +253,14 @@ const TicketLists = ({
                                   >
                                     {ticket.ticketSubject}
                                   </span>
-                                </strong>
+                                </span>
                               ) : (
                                 ticket.ticketSubject
                               )}
                             </td>
                             <td className={TABLESTYLE["tickettable-cell"]}>
                               {ticket.status === "Rejected" ? (
-                                <strong>
+                                <span>
                                   <span
                                     style={{
                                       color: "#d61c20",
@@ -255,75 +268,73 @@ const TicketLists = ({
                                   >
                                     {ticket.requester}
                                   </span>
-                                </strong>
+                                </span>
                               ) : (
                                 ticket.requester
                               )}
                             </td>
                             <td className={TABLESTYLE["tickettable-cell"]}>
                               {ticket.status === "Rejected" ? (
-                                <strong>
+                                <span>
                                   <span
                                     style={{
                                       color: "#d61c20",
                                     }}
                                   >
-                                    {ticket.clientUnit}
+                                    {getFirstChar(ticket.clientUnit)}
                                   </span>
-                                </strong>
+                                </span>
                               ) : (
-                                ticket.clientUnit
+                                getFirstChar(ticket.clientUnit)
                               )}
                             </td>
                             <td className={TABLESTYLE["tickettable-cell"]}>
                               {ticket.status === "Rejected" ? (
-                                <strong>
+                                <span>
                                   <span
                                     style={{
                                       color: "#d61c20",
                                     }}
                                   >
                                     {moment(ticket.createdAt).format(
-                                      "MMMM D YYYY, h:mm:ss a"
+                                      "L, h:mm:ss a"
                                     )}
                                   </span>
-                                </strong>
+                                </span>
                               ) : (
-                                moment(ticket.createdAt).format(
-                                  "MMMM D YYYY, h:mm:ss a"
-                                )
+                                moment(ticket.createdAt).format("L, h:mm:ss a")
                               )}
                             </td>
                             <td className={TABLESTYLE["tickettable-cell"]}>
                               {ticket.status === "Rejected" ? (
-                                <strong>
-                                  <span
-                                    style={{
-                                      color: "#d61c20",
-                                    }}
-                                  >
-                                    {ticket.priority.toUpperCase()}
-                                  </span>
-                                </strong>
+                                <span
+                                  style={{
+                                    color: "#d61c20",
+                                  }}
+                                >
+                                  <span>{ticket.priority.toUpperCase()}</span>
+                                </span>
                               ) : (
-                                <span> {ticket.priority.toUpperCase()}</span>
+                                <span>{ticket.priority.toUpperCase()}</span>
                               )}
                             </td>
-                            <td className={TABLESTYLE["tickettable-cell"]}>
-                              <strong>
-                                {ticket.status === "Rejected" ? (
-                                  <span
-                                    style={{
-                                      color: "#d61c20",
-                                    }}
-                                  >
-                                    {ticket.status.toUpperCase()}
-                                  </span>
-                                ) : (
-                                  <span> {ticket.status.toUpperCase()}</span>
-                                )}
-                              </strong>
-                            </td>
+                            {!showStatus ? null : (
+                              <td className={TABLESTYLE["tickettable-cell"]}>
+                                <>
+                                  {ticket.status === "Rejected" ? (
+                                    <span
+                                      style={{
+                                        color: "#d61c20",
+                                      }}
+                                    >
+                                      {ticket.status.toUpperCase()}
+                                    </span>
+                                  ) : (
+                                    <span> {ticket.status.toUpperCase()}</span>
+                                  )}
+                                </>
+                              </td>
+                            )}
                           </tr>
                         );
                       })}
@@ -339,4 +350,4 @@ const TicketLists = ({
   );
 };
 
-export default TicketLists;
+export default TableTicketData;

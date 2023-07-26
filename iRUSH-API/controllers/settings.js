@@ -11,134 +11,137 @@ const passwordComplexity = require("joi-password-complexity");
 
 // FOR CREATING USERS
 exports.getUsers = async (req, res) => {
-	const users = await User.find({
-		role: { $in: ["CLERK_ITSUPPORT", "CLERK_HELPDESKSUPPORT"] },
-	});
+  const users = await User.find({
+    role: { $in: ["CLERK_ITSUPPORT", "CLERK_HELPDESKSUPPORT"] },
+  });
 
-	try {
-		res.status(200).send(users);
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+  try {
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.fetchAllUsers = async (req, res) => {
-	const irushusers = await User.find();
+  const irushusers = await User.find();
 
-	try {
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 8;
-		const search = req.query.search || "";
-		let role = req.query.role || "All";
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
+    let role = req.query.role || "All";
 
-		const roleOptions = [
-			"CLERK_ITSUPPORT",
-			"CLERK_HELPDESKSUPPORT",
-			"USER_ADMIN",
-			"USER_SUPERADMIN",
-		];
+    const roleOptions = [
+      "CLERK_ITSUPPORT",
+      "CLERK_HELPDESKSUPPORT",
+      "USER_ADMIN",
+      "USER_SUPERADMIN",
+    ];
 
-		role === " " || role === "All"
-			? (role = [...roleOptions])
-			: (role = req.query.role.split(","));
+    role === " " || role === "All"
+      ? (role = [...roleOptions])
+      : (role = req.query.role.split(","));
 
-		const filterIrushUsers = await User.find({
-			$or: [
-				{ firstName: { $regex: search, $options: "i" } },
-				{ lastName: { $regex: search, $options: "i" } },
-			],
-			role: { $in: role },
-		})
-			.skip(page * limit)
-			.limit(limit);
+    const filterIrushUsers = await User.find({
+      email: { $regex: search, $options: "i" },
+      role: { $in: [...role] },
+    })
+      .skip(page * limit)
+      .limit(limit);
 
-		const total = await User.countDocuments({
-			$or: [
-				{ firstName: { $regex: search, $options: "i" } },
-				{ lastName: { $regex: search, $options: "i" } },
-			],
-			role: { $in: role },
-		});
+    const total = await User.countDocuments({
+      email: { $regex: search, $options: "i" },
+      role: { $in: [...role] },
+    });
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched all users.",
-			irushusers,
-			filterIrushUsers,
-			page: page + 1,
-			limit,
-			total,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched all users.",
+      irushusers,
+      filterIrushUsers,
+      page: page + 1,
+      limit,
+      total,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.createUser = async (req, res) => {
-	const { firstName, lastName, email, role, contactNum } = req.body;
+  const { firstName, lastName, email, role, contactNum } = req.body;
 
-	try {
-		if (!req.body) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill in all the fields.",
-			});
-		}
+  const firstNameCapitalized =
+    firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  const lastNameCapitalized =
+    lastName.charAt(0).toUpperCase() + lastName.slice(1);
 
-		const userEmail = await User.findOne({ email: req.body.email });
+  try {
+    if (!req.body) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill in all the fields.",
+      });
+    }
 
-		if (userEmail) {
-			return res.status(400).send({
-				success: false,
-				message: "Email already exists.",
-			});
-		}
+    const userEmail = await User.findOne({ email: req.body.email });
 
-		//email validation
-		const schema = Joi.object({
-			firstName: Joi.string().required().label("First Name"),
-			lastName: Joi.string().required().label("Last Name"),
-			email: Joi.string().email().required().label("Email"),
-			role: Joi.string().required().label("Role"),
-			contactNum: Joi.string().required().label("Contact Number"),
-		});
+    if (userEmail) {
+      return res.status(400).send({
+        success: false,
+        message: "Email already exists.",
+      });
+    }
 
-		const { error } = schema.validate({ ...req.body });
+    //email validation
+    const schema = Joi.object({
+      firstName: Joi.string().required().label("First Name"),
+      lastName: Joi.string().required().label("Last Name"),
+      email: Joi.string().email().required().label("Email"),
+      role: Joi.string().required().label("Role"),
+      contactNum: Joi.string().required().label("Contact Number"),
+    });
 
-		if (error) {
-			return res.status(400).send({
-				success: false,
-				message: error.details[0].message,
-			});
-		}
+    const { error } = schema.validate({
+      ...req.body,
+    });
 
-		//contact number should be 11 digits and not a string
-		if (contactNum.length !== 11 || isNaN(contactNum)) {
-			return res.status(400).send({
-				success: false,
-				message: "Contact Number should be a number containing 11 digits.",
-			});
-		}
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: error.details[0].message,
+      });
+    }
 
-		const generatePassword = crypto.randomBytes(4).toString("hex");
+    //contact number should be 11 digits and not a string
+    if (contactNum.length !== 11 || isNaN(contactNum)) {
+      return res.status(400).send({
+        success: false,
+        message: "Contact Number should be a number containing 11 digits.",
+      });
+    }
 
-		const salt = await bcrypt.genSalt(Number(process.env.SALT));
-		const hashedPassword = await bcrypt.hash(generatePassword, salt);
+    const generatePassword = crypto.randomBytes(4).toString("hex");
 
-		const user = await new User({
-			...req.body,
-			password: hashedPassword,
-		}).save();
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const hashedPassword = await bcrypt.hash(generatePassword, salt);
 
-		const mail = `
+    const user = await new User({
+      ...req.body,
+      firstName: firstNameCapitalized,
+      lastName: lastNameCapitalized,
+      password: hashedPassword,
+    }).save();
+
+    const mail = `
 		<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -426,1200 +429,1223 @@ exports.createUser = async (req, res) => {
 			</body>
 			</html>`;
 
-		res.status(200).send({
-			success: true,
-			message: "User successfully created.",
-			user,
-		});
+    res.status(200).send({
+      success: true,
+      message: "User successfully created.",
+      user,
+    });
 
-		await sendEmail(user.email, "iRUSH Helpdesk System", mail);
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    await sendEmail(user.email, "iRUSH Helpdesk System", mail);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getUserData = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "User successfully retrieved.",
-			user,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "User successfully retrieved.",
+      user,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.patchUser = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-		const { firstName, lastName, contactNum, role, email } = req.body;
+    const { firstName, lastName, contactNum, role, email } = req.body;
 
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		if (
-			!req.body.firstName ||
-			!req.body.lastName ||
-			!req.body.role ||
-			!req.body.email
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill in all fields.",
-			});
-		}
+    if (
+      !req.body.firstName ||
+      !req.body.lastName ||
+      !req.body.role ||
+      !req.body.email
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill in all fields.",
+      });
+    }
 
-		//contact number validation
-		if (contactNum.length !== 11) {
-			return res.status(400).send({
-				success: false,
-				message: "Contact number must be a number containing 11 digits.",
-			});
-		}
+    //contact number validation
+    if (contactNum.length !== 11) {
+      return res.status(400).send({
+        success: false,
+        message: "Contact number must be a number containing 11 digits.",
+      });
+    }
 
-		const schema = Joi.object({
-			firstName: Joi.string().required().label("First Name"),
-			lastName: Joi.string().required().label("Last Name"),
-			email: Joi.string().email().required().label("Email"),
-			role: Joi.string().required().label("Role"),
-			contactNum: Joi.string().required().label("Contact Number"),
-		});
+    const schema = Joi.object({
+      firstName: Joi.string().required().label("First Name"),
+      lastName: Joi.string().required().label("Last Name"),
+      email: Joi.string().email().required().label("Email"),
+      role: Joi.string().required().label("Role"),
+      contactNum: Joi.string().required().label("Contact Number"),
+    });
 
-		const { error } = schema.validate({ ...req.body });
+    const { error } = schema.validate({ ...req.body });
 
-		if (error) {
-			return res.status(400).send({
-				success: false,
-				message: error.details[0].message,
-			});
-		}
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: error.details[0].message,
+      });
+    }
 
-		const emailExists = await User.findOne({ email: req.body.email });
+    const emailExists = await User.findOne({ email: req.body.email });
 
-		if (emailExists && emailExists._id != req.params.id) {
-			return res.status(400).send({
-				success: false,
-				message: "Email already exists.",
-			});
-		}
+    if (emailExists && emailExists._id != req.params.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Email already exists.",
+      });
+    }
 
-		//if no changes applied to the user data
-		if (
-			user.firstName === firstName &&
-			user.lastName === lastName &&
-			user.contactNum === contactNum &&
-			user.role === role &&
-			user.email === email
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    //if no changes applied to the user data
+    if (
+      user.firstName === firstName &&
+      user.lastName === lastName &&
+      user.contactNum === contactNum &&
+      user.role === role &&
+      user.email === email
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		await User.findByIdAndUpdate(
-			req.params.id,
-			{
-				firstName,
-				lastName,
-				contactNum,
-				email,
-				role,
-			},
-			{
-				new: true,
-			}
-		);
+    await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstName,
+        lastName,
+        contactNum,
+        email,
+        role,
+      },
+      {
+        new: true,
+      }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "User successfully updated.",
-			user,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "User successfully updated.",
+      user,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.deleteUser = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		await user.remove();
+    await user.remove();
 
-		res.status(200).send({
-			id: req.params.id,
-			success: true,
-			message: "Successfully deleted a user.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      id: req.params.id,
+      success: true,
+      message: "Successfully deleted a user.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getLoggedUser = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "User successfully retrieved.",
-			user,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "User successfully retrieved.",
+      user,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.updateLoggedUser = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-		const { firstName, lastName, contactNum, email } = req.body;
+    const { firstName, lastName, contactNum, email } = req.body;
 
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		if (
-			!req.body.firstName ||
-			!req.body.lastName ||
-			!req.body.email ||
-			!req.body.contactNum
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill in all fields.",
-			});
-		}
+    if (
+      !req.body.firstName ||
+      !req.body.lastName ||
+      !req.body.email ||
+      !req.body.contactNum
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill in all fields.",
+      });
+    }
 
-		//contact number validation
-		if (contactNum.length !== 11) {
-			return res.status(400).send({
-				success: false,
-				message: "Contact number must be a number containing 11 digits.",
-			});
-		}
+    //contact number validation
+    if (contactNum.length !== 11) {
+      return res.status(400).send({
+        success: false,
+        message: "Contact number must be a number containing 11 digits.",
+      });
+    }
 
-		const schema = Joi.object({
-			firstName: Joi.string().required().label("First Name"),
-			lastName: Joi.string().required().label("Last Name"),
-			email: Joi.string().email().required().label("Email"),
-			contactNum: Joi.string().required().label("Contact Number"),
-		});
+    const schema = Joi.object({
+      firstName: Joi.string().required().label("First Name"),
+      lastName: Joi.string().required().label("Last Name"),
+      email: Joi.string().email().required().label("Email"),
+      contactNum: Joi.string().required().label("Contact Number"),
+    });
 
-		const { error } = schema.validate({ ...req.body });
+    const { error } = schema.validate({ ...req.body });
 
-		if (error) {
-			return res.status(400).send({
-				success: false,
-				message: error.details[0].message,
-			});
-		}
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: error.details[0].message,
+      });
+    }
 
-		const emailExists = await User.findOne({ email: req.body.email });
+    const emailExists = await User.findOne({ email: req.body.email });
 
-		if (emailExists && emailExists._id != req.params.id) {
-			return res.status(400).send({
-				success: false,
-				message: "Email already exists.",
-			});
-		}
+    if (emailExists && emailExists._id != req.params.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Email already exists.",
+      });
+    }
 
-		//if no changes applied to the user data
-		if (
-			user.firstName === firstName &&
-			user.lastName === lastName &&
-			user.contactNum === contactNum &&
-			user.email === email
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    //if no changes applied to the user data
+    if (
+      user.firstName === firstName &&
+      user.lastName === lastName &&
+      user.contactNum === contactNum &&
+      user.email === email
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		await User.findByIdAndUpdate(
-			req.params.id,
-			{
-				firstName,
-				lastName,
-				contactNum,
-				email,
-			},
-			{
-				new: true,
-			}
-		);
+    await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstName,
+        lastName,
+        contactNum,
+        email,
+      },
+      {
+        new: true,
+      }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "User successfully updated.",
-			user,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "User successfully updated.",
+      user,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.updatePassword = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-		if (!user) {
-			return res.status(404).send({
-				success: false,
-				message: "User not found.",
-			});
-		}
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
 
-		if (user._id != req.params.id) {
-			return res.status(401).send({
-				success: false,
-				message: "Unauthorized.",
-			});
-		}
+    if (user._id != req.params.id) {
+      return res.status(401).send({
+        success: false,
+        message: "Unauthorized.",
+      });
+    }
 
-		const { oldPassword, newPassword, confirmPassword } = req.body;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
 
-		if (!req.body.oldPassword || !req.body.newPassword) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill in all fields.",
-			});
-		}
+    if (!req.body.oldPassword || !req.body.newPassword) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill in all fields.",
+      });
+    }
 
-		const validPassword = await bcrypt.compare(oldPassword, user.password);
+    const validPassword = await bcrypt.compare(oldPassword, user.password);
 
-		if (!validPassword) {
-			return res.status(400).send({
-				success: false,
-				message: "Current password do not match.",
-			});
-		}
+    if (!validPassword) {
+      return res.status(400).send({
+        success: false,
+        message: "Current password do not match.",
+      });
+    }
 
-		if (newPassword === oldPassword) {
-			return res.status(400).send({
-				success: false,
-				message: "New password must be different from the old password.",
-			});
-		}
+    if (newPassword === oldPassword) {
+      return res.status(400).send({
+        success: false,
+        message: "New password must be different from the old password.",
+      });
+    }
 
-		const passwordSchema = Joi.object({
-			password: passwordComplexity().required().label("Password"),
-		});
+    const passwordSchema = Joi.object({
+      password: passwordComplexity().required().label("Password"),
+    });
 
-		const { error } = passwordSchema.validate({ password: newPassword });
+    const { error } = passwordSchema.validate({ password: newPassword });
 
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
+    if (error)
+      return res.status(400).send({ message: error.details[0].message });
 
-		if (newPassword !== confirmPassword) {
-			return res.status(400).send({
-				success: false,
-				message: "Passwords do not match.",
-			});
-		}
+    if (newPassword !== confirmPassword) {
+      return res.status(400).send({
+        success: false,
+        message: "Passwords do not match.",
+      });
+    }
 
-		const salt = await bcrypt.genSalt(10);
-		const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-		await User.findByIdAndUpdate(
-			req.params.id,
-			{
-				password: hashedPassword,
-			},
-			{
-				new: true,
-			}
-		);
+    await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        password: hashedPassword,
+      },
+      {
+        new: true,
+      }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "Password successfully updated.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Password successfully updated.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 // FOR CATEGORIES
 exports.getCategory = async (req, res) => {
-	try {
-		const category = await Category.find();
+  try {
+    const category = await Category.find();
 
-		res.status(200).send(category);
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send(category);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.fetchCategoryData = async (req, res) => {
-	try {
-		const category = await Category.find();
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 8;
-		const search = req.query.search || "";
+  try {
+    const category = await Category.find();
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
 
-		const filterCategoryData = await Category.find({
-			categoryName: { $regex: search, $options: "i" },
-		})
+    const filterCategoryData = await Category.find({
+      categoryName: { $regex: search, $options: "i" },
+    })
 
-			.skip(page * limit)
-			.limit(limit);
+      .skip(page * limit)
+      .limit(limit);
 
-		const total = await Category.countDocuments({
-			categoryName: { $regex: search, $options: "i" },
-		});
+    const total = await Category.countDocuments({
+      categoryName: { $regex: search, $options: "i" },
+    });
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched all categories.",
-			category,
-			filterCategoryData,
-			page: page + 1,
-			limit,
-			total,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched all categories.",
+      category,
+      filterCategoryData,
+      page: page + 1,
+      limit,
+      total,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getCategoryData = async (req, res) => {
-	try {
-		const category = await Category.findById(req.params.id);
+  try {
+    const category = await Category.findById(req.params.id);
 
-		if (!category) {
-			return res.status(400).send({
-				success: false,
-				message: "Category does not exist.",
-			});
-		}
+    if (!category) {
+      return res.status(400).send({
+        success: false,
+        message: "Category does not exist.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched the category.",
-			category,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched the category.",
+      category,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.createCategory = async (req, res) => {
-	try {
-		const { categoryName, description } = req.body;
+  try {
+    const { categoryName, description } = req.body;
 
-		if (!categoryName) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a solution name.",
-			});
-		}
+    if (!categoryName) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a solution name.",
+      });
+    }
 
-		if (!description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a description.",
-			});
-		}
+    if (!description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a description.",
+      });
+    }
 
-		const categoryTitle = await Category.findOne({
-			categoryName,
-		});
+    const categoryTitle = await Category.findOne({
+      categoryName,
+    });
 
-		if (categoryTitle) {
-			return res.status(409).send({
-				success: false,
-				message: "Category already exists.",
-			});
-		}
+    if (categoryTitle) {
+      return res.status(409).send({
+        success: false,
+        message: "Category already exists.",
+      });
+    }
 
-		const category = await Category.create({
-			categoryName,
-			description,
-		});
+    const capitalizeCategoryName =
+      categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+    const capitalizeDescription =
+      description.charAt(0).toUpperCase() + description.slice(1);
 
-		return res.status(200).send({
-			success: true,
-			message: "Category created successfully.",
-			category,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    const category = await Category.create({
+      categoryName: capitalizeCategoryName,
+      description: capitalizeDescription,
+    });
+
+    return res.status(200).send({
+      success: true,
+      message: "Category created successfully.",
+      category,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.patchCategory = async (req, res) => {
-	try {
-		const category = await Category.findById(req.params.id);
-		const { categoryName, description } = req.body;
+  try {
+    const category = await Category.findById(req.params.id);
+    const { categoryName, description } = req.body;
 
-		//throw error if category name exists
+    //throw error if category name exists
 
-		const categoryTitle = await Category.findOne({
-			categoryName,
-		});
+    const categoryTitle = await Category.findOne({
+      categoryName,
+    });
 
-		// if the category name is not changed and the description is not changed
-		if (
-			categoryName == category.categoryName &&
-			description == category.description
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    // if the category name is not changed and the description is not changed
+    if (
+      categoryName == category.categoryName &&
+      description == category.description
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		// check the category name if it exists in the database nad not the same as the current category name
-		if (categoryTitle && categoryName !== category.categoryName) {
-			return res.status(409).send({
-				success: false,
-				message: "Category already exists.",
-			});
-		}
+    // check the category name if it exists in the database nad not the same as the current category name
+    if (categoryTitle && categoryName !== category.categoryName) {
+      return res.status(409).send({
+        success: false,
+        message: "Category already exists.",
+      });
+    }
 
-		if (!category) {
-			return res.status(400).send({
-				success: false,
-				message: "Category does not exist.",
-			});
-		}
+    if (!category) {
+      return res.status(400).send({
+        success: false,
+        message: "Category does not exist.",
+      });
+    }
 
-		if (!req.body.categoryName || !req.body.description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill all the field",
-			});
-		}
+    if (!req.body.categoryName || !req.body.description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill all the field",
+      });
+    }
 
-		//update category
-		await Category.findByIdAndUpdate(
-			req.params.id,
-			{
-				categoryName,
-				description,
-			},
-			{ new: true }
-		);
+    //update category
+    await Category.findByIdAndUpdate(
+      req.params.id,
+      {
+        categoryName,
+        description,
+      },
+      { new: true }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully updated the category.",
-			category,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully updated the category.",
+      category,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.deleteCategory = async (req, res) => {
-	try {
-		const category = await Category.findById(req.params.id);
-		if (!category) {
-			return res.status(400).send({
-				success: false,
-				message: "Category does not exist.",
-			});
-		}
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+      return res.status(400).send({
+        success: false,
+        message: "Category does not exist.",
+      });
+    }
 
-		await category.remove();
+    await category.remove();
 
-		res.status(200).send({
-			id: req.params.id,
-			success: true,
-			message: "Successfully deleted the category.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      id: req.params.id,
+      success: true,
+      message: "Successfully deleted the category.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 //FOR SOLUTIONS
 
 exports.getSolution = async (req, res) => {
-	try {
-		const solution = await Solution.find();
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 8;
-		const search = req.query.search || "";
+  try {
+    const solution = await Solution.find();
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
 
-		const filterSolutionData = await Solution.find({
-			solutionName: { $regex: search, $options: "i" },
-		})
-			.skip(page * limit)
-			.limit(limit);
+    const filterSolutionData = await Solution.find({
+      solutionName: { $regex: search, $options: "i" },
+    })
+      .skip(page * limit)
+      .limit(limit);
 
-		const total = await Solution.countDocuments({
-			solutionName: { $regex: search, $options: "i" },
-		});
+    const total = await Solution.countDocuments({
+      solutionName: { $regex: search, $options: "i" },
+    });
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched all solutions.",
-			solution,
-			filterSolutionData,
-			page: page + 1,
-			limit,
-			total,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched all solutions.",
+      solution,
+      filterSolutionData,
+      page: page + 1,
+      limit,
+      total,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getSolutionData = async (req, res) => {
-	try {
-		const solution = await Solution.findById(req.params.id);
-		if (!solution) {
-			return res.status(400).send({
-				success: false,
-				message: "Solution does not exist.",
-			});
-		}
+  try {
+    const solution = await Solution.findById(req.params.id);
+    if (!solution) {
+      return res.status(400).send({
+        success: false,
+        message: "Solution does not exist.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched the solution.",
-			solution,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched the solution.",
+      solution,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.createSolution = async (req, res) => {
-	try {
-		const { solutionName, description } = req.body;
+  try {
+    const { solutionName, description } = req.body;
 
-		if (!solutionName) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a solution name.",
-			});
-		}
+    if (!solutionName) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a solution name.",
+      });
+    }
 
-		if (!description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a description.",
-			});
-		}
+    if (!description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a description.",
+      });
+    }
 
-		const solutionTitle = await Solution.findOne({
-			solutionName,
-		});
+    const capitalizedSolutionName =
+      solutionName.charAt(0).toUpperCase() + solutionName.slice(1);
 
-		if (solutionTitle) {
-			return res.status(409).send({
-				success: false,
-				message: "Solution already exists.",
-			});
-		}
+    const capitalizedDescription =
+      description.charAt(0).toUpperCase() + description.slice(1);
 
-		const solution = await Solution.create({
-			solutionName,
-			description,
-		});
+    const solutionTitle = await Solution.findOne({
+      solutionName,
+    });
 
-		return res.status(200).send({
-			success: true,
-			message: "Solution created successfully.",
-			solution,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    if (solutionTitle) {
+      return res.status(409).send({
+        success: false,
+        message: "Solution already exists.",
+      });
+    }
+
+    const solution = await Solution.create({
+      solutionName: capitalizedSolutionName,
+      description: capitalizedDescription,
+    });
+
+    return res.status(200).send({
+      success: true,
+      message: "Solution created successfully.",
+      solution,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.patchSolution = async (req, res) => {
-	try {
-		const solution = await Solution.findById(req.params.id);
-		const { solutionName, description } = req.body;
+  try {
+    const solution = await Solution.findById(req.params.id);
+    const { solutionName, description } = req.body;
 
-		if (!solution) {
-			return res.status(400).send({
-				success: false,
-				message: "Solution does not exist.",
-			});
-		}
+    if (!solution) {
+      return res.status(400).send({
+        success: false,
+        message: "Solution does not exist.",
+      });
+    }
 
-		//throw error if solution name exists
+    //throw error if solution name exists
 
-		const solutionTitle = await Solution.findOne({
-			solutionName,
-		});
+    const solutionTitle = await Solution.findOne({
+      solutionName,
+    });
 
-		// if the solution name is not changed and the description is not changed
-		if (
-			solutionName == solution.solutionName &&
-			description == solution.description
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    // if the solution name is not changed and the description is not changed
+    if (
+      solutionName == solution.solutionName &&
+      description == solution.description
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		// check the solution name if it exists in the database nad not the same as the current category name
-		if (solutionTitle && solutionName !== solution.solutionName) {
-			return res.status(409).send({
-				success: false,
-				message: "Solution already exists.",
-			});
-		}
+    // check the solution name if it exists in the database nad not the same as the current category name
+    if (solutionTitle && solutionName !== solution.solutionName) {
+      return res.status(409).send({
+        success: false,
+        message: "Solution already exists.",
+      });
+    }
 
-		if (!req.body.solutionName || !req.body.description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill all the field",
-			});
-		}
+    if (!req.body.solutionName || !req.body.description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill all the field",
+      });
+    }
 
-		//update solution
-		await Solution.findByIdAndUpdate(
-			req.params.id,
-			{
-				solutionName,
-				description,
-			},
-			{ new: true }
-		);
+    //update solution
+    await Solution.findByIdAndUpdate(
+      req.params.id,
+      {
+        solutionName,
+        description,
+      },
+      { new: true }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully updated the solution.",
-			solution,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully updated the solution.",
+      solution,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.deleteSolution = async (req, res) => {
-	try {
-		const solution = await Solution.findById(req.params.id);
-		if (!solution) {
-			return res.status(400).send({
-				success: false,
-				message: "Solution does not exist.",
-			});
-		}
+  try {
+    const solution = await Solution.findById(req.params.id);
+    if (!solution) {
+      return res.status(400).send({
+        success: false,
+        message: "Solution does not exist.",
+      });
+    }
 
-		await solution.remove();
+    await solution.remove();
 
-		res.status(200).send({
-			id: req.params.id,
-			success: true,
-			message: "Successfully deleted the solution.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      id: req.params.id,
+      success: true,
+      message: "Successfully deleted the solution.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 // FOR REJECT REASONS
 
 exports.getRejectReason = async (req, res) => {
-	try {
-		const rejectReason = await RejectReason.find();
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 8;
-		const search = req.query.search || "";
+  try {
+    const rejectReason = await RejectReason.find();
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
 
-		const filterRejectReasonData = await RejectReason.find({
-			rejectReasonName: { $regex: search, $options: "i" },
-		})
-			.skip(page * limit)
-			.limit(limit);
+    const filterRejectReasonData = await RejectReason.find({
+      rejectReasonName: { $regex: search, $options: "i" },
+    })
+      .skip(page * limit)
+      .limit(limit);
 
-		const total = await RejectReason.countDocuments({
-			rejectReasonName: { $regex: search, $options: "i" },
-		});
+    const total = await RejectReason.countDocuments({
+      rejectReasonName: { $regex: search, $options: "i" },
+    });
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched all reject reasons.",
-			rejectReason,
-			filterRejectReasonData,
-			page: page + 1,
-			limit,
-			total,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched all reject reasons.",
+      rejectReason,
+      filterRejectReasonData,
+      page: page + 1,
+      limit,
+      total,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.createRejectReason = async (req, res) => {
-	try {
-		const { rejectReasonName, description } = req.body;
+  try {
+    const { rejectReasonName, description } = req.body;
 
-		if (!rejectReasonName) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a reject reason name.",
-			});
-		}
+    if (!rejectReasonName) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a reject reason name.",
+      });
+    }
 
-		if (!description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a description.",
-			});
-		}
+    if (!description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a description.",
+      });
+    }
 
-		const rejectReasonTitle = await RejectReason.findOne({
-			rejectReasonName,
-		});
+    const capitalizeRejectReasonName =
+      rejectReasonName.charAt(0).toUpperCase() + rejectReasonName.slice(1);
 
-		if (rejectReasonTitle) {
-			return res.status(409).send({
-				success: false,
-				message: "Reject reason already exists.",
-			});
-		}
+    const capitalizeDescription =
+      description.charAt(0).toUpperCase() + description.slice(1);
 
-		const rejectReason = await RejectReason.create({
-			rejectReasonName,
-			description,
-		});
+    const rejectReasonTitle = await RejectReason.findOne({
+      rejectReasonName,
+    });
 
-		return res.status(200).send({
-			success: true,
-			message: "Reject reason created successfully.",
-			rejectReason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    if (rejectReasonTitle) {
+      return res.status(409).send({
+        success: false,
+        message: "Reject reason already exists.",
+      });
+    }
+
+    const rejectReason = await RejectReason.create({
+      rejectReasonName: capitalizeRejectReasonName,
+      description: capitalizeDescription,
+    });
+
+    return res.status(200).send({
+      success: true,
+      message: "Reject reason created successfully.",
+      rejectReason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getRejectReasonData = async (req, res) => {
-	try {
-		const rejectreason = await RejectReason.findById(req.params.id);
+  try {
+    const rejectreason = await RejectReason.findById(req.params.id);
 
-		if (!rejectreason) {
-			return res.status(400).send({
-				success: false,
-				message: "Reject Reason does not exist.",
-			});
-		}
+    if (!rejectreason) {
+      return res.status(400).send({
+        success: false,
+        message: "Reject Reason does not exist.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched the category.",
-			rejectreason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched the category.",
+      rejectreason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.patchRejectReason = async (req, res) => {
-	try {
-		const rejectReason = await RejectReason.findById(req.params.id);
+  try {
+    const rejectReason = await RejectReason.findById(req.params.id);
 
-		const { rejectReasonName, description } = req.body;
+    const { rejectReasonName, description } = req.body;
 
-		if (!rejectReason) {
-			return res.status(400).send({
-				success: false,
-				message: "Reject reason does not exist.",
-			});
-		}
+    if (!rejectReason) {
+      return res.status(400).send({
+        success: false,
+        message: "Reject reason does not exist.",
+      });
+    }
 
-		const rejectReasonTitle = await RejectReason.findOne({
-			rejectReasonName,
-		});
+    const rejectReasonTitle = await RejectReason.findOne({
+      rejectReasonName,
+    });
 
-		// if the solution name is not changed and the description is not changed
-		if (
-			rejectReasonName == rejectReason.rejectReasonName &&
-			description == rejectReason.description
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    // if the solution name is not changed and the description is not changed
+    if (
+      rejectReasonName == rejectReason.rejectReasonName &&
+      description == rejectReason.description
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		if (rejectReasonTitle && rejectReasonTitle._id != req.params.id) {
-			return res.status(409).send({
-				success: false,
-				message: "Reject reason already exists.",
-			});
-		}
+    if (rejectReasonTitle && rejectReasonTitle._id != req.params.id) {
+      return res.status(409).send({
+        success: false,
+        message: "Reject reason already exists.",
+      });
+    }
 
-		if (!req.body.rejectReasonName || !req.body.description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please fill all the field",
-			});
-		}
+    if (!req.body.rejectReasonName || !req.body.description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please fill all the field",
+      });
+    }
 
-		//update the reject reason
-		await RejectReason.findByIdAndUpdate(
-			req.params.id,
-			{
-				rejectReasonName,
-				description,
-			},
-			{ new: true }
-		);
+    //update the reject reason
+    await RejectReason.findByIdAndUpdate(
+      req.params.id,
+      {
+        rejectReasonName,
+        description,
+      },
+      { new: true }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully updated the reject reason.",
-			rejectReason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully updated the reject reason.",
+      rejectReason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.deleteRejectReason = async (req, res) => {
-	try {
-		const rejectReason = await RejectReason.findById(req.params.id);
+  try {
+    const rejectReason = await RejectReason.findById(req.params.id);
 
-		if (!rejectReason) {
-			return res.status(400).send({
-				success: false,
-				message: "Reject reason does not exist.",
-			});
-		}
+    if (!rejectReason) {
+      return res.status(400).send({
+        success: false,
+        message: "Reject reason does not exist.",
+      });
+    }
 
-		await rejectReason.remove();
+    await rejectReason.remove();
 
-		res.status(200).send({
-			id: req.params.id,
-			success: true,
-			message: "Successfully deleted the reject reason.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      id: req.params.id,
+      success: true,
+      message: "Successfully deleted the reject reason.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 // FOR VOID REASONS
 
 exports.getVoidReason = async (req, res) => {
-	try {
-		const voidReason = await VoidReason.find();
-		const page = parseInt(req.query.page) - 1 || 0;
-		const limit = parseInt(req.query.limit) || 8;
-		const search = req.query.search || "";
+  try {
+    const voidReason = await VoidReason.find();
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
 
-		const filterVoidReasonData = await VoidReason.find({
-			voidReasonName: { $regex: search, $options: "i" },
-		})
-			.skip(page * limit)
-			.limit(limit);
+    const filterVoidReasonData = await VoidReason.find({
+      voidReasonName: { $regex: search, $options: "i" },
+    })
+      .skip(page * limit)
+      .limit(limit);
 
-		const total = await VoidReason.countDocuments({
-			voidReasonName: { $regex: search, $options: "i" },
-		});
+    const total = await VoidReason.countDocuments({
+      voidReasonName: { $regex: search, $options: "i" },
+    });
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched all void reasons.",
-			voidReason,
-			filterVoidReasonData,
-			page: page + 1,
-			limit,
-			total,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched all void reasons.",
+      voidReason,
+      filterVoidReasonData,
+      page: page + 1,
+      limit,
+      total,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.getVoidReasonData = async (req, res) => {
-	try {
-		const voidreason = await VoidReason.findById(req.params.id);
+  try {
+    const voidreason = await VoidReason.findById(req.params.id);
 
-		if (!voidreason) {
-			return res.status(400).send({
-				success: false,
-				message: "Void Reason does not exist.",
-			});
-		}
+    if (!voidreason) {
+      return res.status(400).send({
+        success: false,
+        message: "Void Reason does not exist.",
+      });
+    }
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully fetched the category.",
-			voidreason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully fetched the category.",
+      voidreason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.createVoidReason = async (req, res) => {
-	try {
-		const { voidReasonName, description } = req.body;
+  try {
+    const { voidReasonName, description } = req.body;
 
-		if (!voidReasonName) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a void reason name.",
-			});
-		}
+    if (!voidReasonName) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a void reason name.",
+      });
+    }
 
-		if (!description) {
-			return res.status(400).send({
-				success: false,
-				message: "Please enter a description.",
-			});
-		}
+    if (!description) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter a description.",
+      });
+    }
 
-		const voidReasonTitle = await VoidReason.findOne({
-			voidReasonName,
-		});
+    const capitalizedVoidReasonName =
+      voidReasonName.charAt(0).toUpperCase() + voidReasonName.slice(1);
 
-		if (voidReasonTitle) {
-			return res.status(409).send({
-				success: false,
-				message: "Void reason already exists.",
-			});
-		}
+    const capitalizedDescription =
+      description.charAt(0).toUpperCase() + description.slice(1);
 
-		const voidReason = await VoidReason.create({
-			voidReasonName,
-			description,
-		});
+    const voidReasonTitle = await VoidReason.findOne({
+      voidReasonName,
+    });
 
-		return res.status(200).send({
-			success: true,
-			message: "Void reason created successfully.",
-			voidReason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    if (voidReasonTitle) {
+      return res.status(409).send({
+        success: false,
+        message: "Void reason already exists.",
+      });
+    }
+
+    const voidReason = await VoidReason.create({
+      voidReasonName: capitalizedVoidReasonName,
+      description: capitalizedDescription,
+    });
+
+    return res.status(200).send({
+      success: true,
+      message: "Void reason created successfully.",
+      voidReason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.patchVoidReason = async (req, res) => {
-	try {
-		const voidReason = await VoidReason.findById(req.params.id);
+  try {
+    const voidReason = await VoidReason.findById(req.params.id);
 
-		const { voidReasonName, description } = req.body;
+    const { voidReasonName, description } = req.body;
 
-		if (!voidReason) {
-			return res.status(400).send({
-				success: false,
-				message: "Void reason does not exist.",
-			});
-		}
+    if (!voidReason) {
+      return res.status(400).send({
+        success: false,
+        message: "Void reason does not exist.",
+      });
+    }
 
-		const voidReasonTitle = await VoidReason.findOne({
-			voidReasonName,
-		});
+    const voidReasonTitle = await VoidReason.findOne({
+      voidReasonName,
+    });
 
-		// if the solution name is not changed and the description is not changed
-		if (
-			voidReasonName == voidReason.voidReasonName &&
-			description == voidReason.description
-		) {
-			return res.status(400).send({
-				success: false,
-				message: "No changes applied.",
-			});
-		}
+    // if the solution name is not changed and the description is not changed
+    if (
+      voidReasonName == voidReason.voidReasonName &&
+      description == voidReason.description
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "No changes applied.",
+      });
+    }
 
-		// check the solution name if it exists in the database nad not the same as the current category name
-		if (voidReasonTitle && voidReasonName !== voidReason.voidReasonName) {
-			return res.status(409).send({
-				success: false,
-				message: "Reject Reason already exists.",
-			});
-		}
+    // check the solution name if it exists in the database nad not the same as the current category name
+    if (voidReasonTitle && voidReasonName !== voidReason.voidReasonName) {
+      return res.status(409).send({
+        success: false,
+        message: "Reject Reason already exists.",
+      });
+    }
 
-		await VoidReason.findByIdAndUpdate(
-			req.params.id,
-			{
-				voidReasonName,
-				description,
-			},
-			{
-				new: true,
-			}
-		);
+    await VoidReason.findByIdAndUpdate(
+      req.params.id,
+      {
+        voidReasonName,
+        description,
+      },
+      {
+        new: true,
+      }
+    );
 
-		res.status(200).send({
-			success: true,
-			message: "Successfully updated the void reason.",
-			voidReason,
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      success: true,
+      message: "Successfully updated the void reason.",
+      voidReason,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };
 
 exports.deleteVoidReason = async (req, res) => {
-	try {
-		const voidReason = await VoidReason.findById(req.params.id);
+  try {
+    const voidReason = await VoidReason.findById(req.params.id);
 
-		if (!voidReason) {
-			return res.status(400).send({
-				success: false,
-				message: "Void reason does not exist.",
-			});
-		}
+    if (!voidReason) {
+      return res.status(400).send({
+        success: false,
+        message: "Void reason does not exist.",
+      });
+    }
 
-		await voidReason.remove();
+    await voidReason.remove();
 
-		res.status(200).send({
-			id: req.params.id,
-			success: true,
-			message: "Successfully deleted the void reason.",
-		});
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: "Internal Server Error.",
-			error: error.message,
-		});
-	}
+    res.status(200).send({
+      id: req.params.id,
+      success: true,
+      message: "Successfully deleted the void reason.",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
 };

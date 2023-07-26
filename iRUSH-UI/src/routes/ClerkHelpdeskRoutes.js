@@ -1,12 +1,12 @@
 import { Outlet, Navigate } from "react-router-dom";
-import Pagebroken from "../components/common/Pagebroken";
-import UserHeader from "../components/common/UserHeader";
-import Navbar from "../components/common/Navbar";
-import COMPONENTSTYLE from "../styles/global/component.module.css";
+import Pagebroken from "components/common/Pagebroken";
+import UserHeader from "components/common/UserHeader";
+import Navbar from "components/common/Navbar";
+import COMPONENTSTYLE from "styles/global/component.module.css";
 
 function ClerkHelpdeskRoutes() {
-  const token = sessionStorage.getItem("authToken");
-  const tokenRole = sessionStorage.getItem("clerkRole");
+  const token = localStorage.getItem("authToken");
+  const tokenRole = localStorage.getItem("clerkRole");
 
   if (!token && !tokenRole) {
     return <Pagebroken />;

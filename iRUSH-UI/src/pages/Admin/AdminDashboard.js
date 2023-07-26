@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import ADMINDASHBOARDSTYLE from "../../styles/pages/admin/user-admin/admindashboard.module.css";
-import UsersReport from "../../components/admin/user-admin/UsersReport";
-import { instance } from "../../api/axios";
-import TicketLists from "../../components/admin/user-admin/TicketLists";
-import Pagination from "../../components/features/Pagination";
-import TicketStatus from "../../components/admin/user-admin/TicketStatus";
-import FilterPriority from "../../components/features/FilterPriority";
-import FilterCategory from "../../components/features/FilterCategory";
-import FilterDate from "../../components/features/FilterDate";
-import Search from "../../components/features/Search";
+import ADMINDASHBOARDSTYLE from "styles/pages/admin/user-admin/admindashboard.module.css";
+import UsersReport from "components/admin/user-admin/UsersReport";
+import { instance } from "api/axios";
+import TableTicketData from "components/common/TableTicketData";
+import Pagination from "components/features/Pagination";
+import TicketStatus from "components/admin/user-admin/TicketStatus";
+import FilterPriority from "components/features/FilterPriority";
+import FilterCategory from "components/features/FilterCategory";
+import FilterDate from "components/features/FilterDate";
+import Search from "components/features/Search";
+import BarChart from "components/charts/BarChart";
+import LineChart from "components/charts/LineChart";
+import DoughnutChart from "components/charts/DoughnutChart";
+import PieChart from "components/charts/PieChart";
+import DoughnutChart2 from "components/charts/DoughnutChart2";
+import moment from "moment";
 
 function AdminDashboard() {
   const [loggedUser, setLoggedUser] = useState(
-    JSON.parse(sessionStorage.getItem("user")) || null
+    JSON.parse(localStorage.getItem("user")) || null
   );
   const [usersReport, setUsersReport] = useState([]);
   const [usersReportLoading, setUsersReportLoading] = useState(true);
@@ -20,7 +26,7 @@ function AdminDashboard() {
 
   //get the tickets
   const [dataTickets, setDataTickets] = useState([]);
-
+  const [tickets, setTickets] = useState([]);
   //PAGINATION
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(8);
@@ -30,12 +36,15 @@ function AdminDashboard() {
   //FILTERING
   const [priority, setPriority] = useState({ priority: " " });
   const [category, setCategory] = useState({ category: " " });
-  const [dateFrom, setDateFrom] = useState({ dateFrom: 0 });
-  const [dateTo, setDateTo] = useState({ dateTo: new Date() });
+  const [dateFrom, setDateFrom] = useState({
+    dateFrom: moment(0).format("YYYY-MM-DD"),
+  });
+  const [dateTo, setDateTo] = useState({
+    dateTo: moment().format("YYYY-MM-DD"),
+  });
 
   useEffect(() => {
-    //GET THE USER
-    setLoggedUser(JSON.parse(sessionStorage.getItem("user")) || null);
+    setLoggedUser(JSON.parse(localStorage.getItem("user")) || null);
 
     const fetchiRUSHUsers = async () => {
       setUsersReportLoading(true);
@@ -46,18 +55,28 @@ function AdminDashboard() {
           setUsersReportLoading(false)
         )
         .catch((err) => {
-          console.log(err);
           if (err.response.status === 401) {
             window.location.href = "/login";
           }
         });
     };
 
+    // FETCH ALL THE TICKETS WITHOUT FILTER
+    const getTickets = async () => {
+      await instance.get(`/tickets/tickets`).then((response) => {
+        setTickets(response.data.ticket);
+      });
+    };
+
     const fetchTickets = async () => {
       setTicketDataLoading(true);
+
+      const formattedDateFrom = moment(dateFrom.dateFrom).format("YYYY-MM-DD");
+      const formattedDateTo = moment(dateTo.dateTo).format("YYYY-MM-DD");
+
       await instance
         .get(
-          `/tickets/tickets?priority=${priority.priority}&page=${page}&limit=${limit}&search=${search}&ticketCategory=${category.category}&dateFrom=${dateFrom.dateFrom}&dateTo=${dateTo.dateTo}`
+          `/tickets/tickets?priority=${priority.priority}&page=${page}&limit=${limit}&search=${search}&ticketCategory=${category.category}&dateFrom=${formattedDateFrom}&dateTo=${formattedDateTo}`
         )
         .then((response) => {
           setLimit(response.data.limit);
@@ -65,7 +84,6 @@ function AdminDashboard() {
           setDataTickets(response.data.filteredTickets);
         })
         .catch((err) => {
-          console.log(err);
           if (err.response.status === 401) {
             window.location.href = "/login";
           }
@@ -73,6 +91,38 @@ function AdminDashboard() {
       setTicketDataLoading(false);
     };
 
+    const pushQueryToUrl = () => {
+      const query = [];
+
+      if (page) {
+        query.push(`page=${page}`);
+      }
+      if (limit) {
+        query.push(`limit=${limit}`);
+      }
+      if (search) {
+        query.push(`search=${search}`);
+      }
+      if (priority.priority) {
+        query.push(`priority=${priority.priority}`);
+      }
+      if (category.category) {
+        query.push(`ticketCategory=${category.category}`);
+      }
+      if (dateFrom.dateFrom) {
+        query.push(`dateFrom=${dateFrom.dateFrom}`);
+      }
+      if (dateTo.dateTo) {
+        query.push(`dateTo=${dateTo.dateTo}`);
+      }
+
+      window.history.pushState({}, "", `?${query.join("&")}`);
+
+      // clear the query if the user clicks a link
+    };
+
+    getTickets();
+    pushQueryToUrl();
     fetchiRUSHUsers();
     fetchTickets();
   }, [page, limit, search, priority, category, dateFrom, dateTo]);
@@ -95,7 +145,7 @@ function AdminDashboard() {
             <div
               className={ADMINDASHBOARDSTYLE["ticketcontainer-ticketstatus"]}
             >
-              <TicketStatus />
+              <TicketStatus checkRole={loggedUser[0].role} />
             </div>
 
             <div
@@ -137,12 +187,20 @@ function AdminDashboard() {
             <div
               className={ADMINDASHBOARDSTYLE["content-ticketreport__wrapper"]}
             >
-              <TicketLists
-                header={"OVERALL TICKET REPORT"}
-                dataTickets={dataTickets}
-                ticketLoading={ticketDataLoading}
-                setDataTickets={setDataTickets}
-              />
+              <div
+                className={
+                  ADMINDASHBOARDSTYLE["content-ticketreport__container"]
+                }
+              >
+                <TableTicketData
+                  header={"OVERALL TICKET REPORT"}
+                  dataTickets={dataTickets}
+                  ticketLoading={ticketDataLoading}
+                  setDataTickets={setDataTickets}
+                  role={loggedUser[0].role}
+                  showStatus={true}
+                />
+              </div>
 
               <Pagination
                 page={page}
@@ -151,6 +209,41 @@ function AdminDashboard() {
                 setPage={(page) => setPage(page)}
                 setLimit={(limit) => setLimit(limit)}
               />
+            </div>
+
+            <div className={ADMINDASHBOARDSTYLE["ticketreport-graphs"]}>
+              <h4 className={ADMINDASHBOARDSTYLE["ticketreport-header"]}>
+                GRAPHS
+              </h4>
+              <div
+                className={ADMINDASHBOARDSTYLE["report-chart__ticketcreated"]}
+              >
+                <LineChart header={"TICKETS CREATED PER DAY"} data={tickets} />
+              </div>
+              <div className={ADMINDASHBOARDSTYLE["report-chart__SLA"]}>
+                <BarChart
+                  header={"RESOLVED TICKETS PER USER"}
+                  data={usersReport}
+                />
+              </div>
+              <div
+                className={
+                  ADMINDASHBOARDSTYLE["report-chart__priorityandstatus"]
+                }
+              >
+                <DoughnutChart
+                  header={"TICKETS CREATED ACCORDING TO STATUS"}
+                  data={tickets}
+                />
+                <PieChart
+                  header={"TICKETS CREATED ACCORDING TO CATEGORY"}
+                  data={tickets}
+                />
+                <DoughnutChart2
+                  header={"TICKETS CREATED ACCORDING TO UNITS"}
+                  data={tickets}
+                />
+              </div>
             </div>
           </div>
         </div>

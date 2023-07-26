@@ -1,0 +1,24 @@
+.tooltip {
+  position: relative;
+  display: block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: rgb(66, 66, 66);
+  color: rgb(255, 255, 255);
+  padding: 5px;
+  border-radius: 2px;
+  position: absolute;
+  top: 1rem;
+  left: 3.5rem;
+  z-index: 1;
+  font-size: 10px;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

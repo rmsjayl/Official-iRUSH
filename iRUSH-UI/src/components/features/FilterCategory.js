@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from "react";
-import FILTERSTYLE from "../../styles/components/features/filterstyle.module.css";
-import { instance } from "../../api/axios";
+import { Autocomplete, TextField } from "@mui/material";
+import FILTERSTYLE from "styles/components/features/filterstyle.module.css";
+import { instance } from "api/axios";
 
-const FilterCategory = ({ setCategory }) => {
+const FilterCategory = ({ category, setCategory }) => {
   const [categories, setCategories] = useState([]);
+  const [categoryValue, setCategoryValue] = useState({ category: " " });
 
-  const onSelectChange = ({ currentTarget: input }) => {
-    setCategory({ category: input.value });
+  const onSelectChange = (event, value) => {
+    if (value) {
+      let categoryValue = value.categoryName;
+      setCategoryValue({ categoryName: categoryValue });
+      setCategory({ category: categoryValue });
+    } else {
+      setCategoryValue({ category: " " });
+      setCategory({ category: " " });
+    }
   };
 
   useEffect(() => {
     const fetchCategories = async () => {
-      await instance
-        .get("/settings/fetchcategory")
-        .then((response) => {
-          setCategories(response.data);
-        })
-        .catch((error) => console.log(error));
+      try {
+        const response = await instance.get("/settings/fetchcategory");
+        setCategories(response.data);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          window.location.href = "/login";
+        }
+      }
     };
 
     fetchCategories();
@@ -26,18 +37,19 @@ const FilterCategory = ({ setCategory }) => {
     <>
       <div className={FILTERSTYLE["categoryfilter-container"]}>
         <div className={FILTERSTYLE["filter-container__wrapper"]}>
-          <span> Category: </span>
-          <select
-            className={FILTERSTYLE["filter-select"]}
+          <Autocomplete
+            size="small"
             onChange={onSelectChange}
-          >
-            <option value="All">Show All</option>
-            {categories.map((category) => (
-              <option key={category._id} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
+            options={categories}
+            getOptionLabel={(option) => option.categoryName}
+            renderInput={(params) => (
+              <TextField
+                fullWidth
+                {...params}
+                label="FILTER BASED ON CATEGORY"
+              />
+            )}
+          />
         </div>
       </div>
     </>

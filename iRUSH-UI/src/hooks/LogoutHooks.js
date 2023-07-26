@@ -1,13 +1,16 @@
-import { useAuthContext } from "../context/AuthContext";
+import React, { useState } from "react";
+import { useAuthContext } from "context/AuthContext";
 
 export const UseLogout = () => {
   const { dispatch } = useAuthContext();
+  const [loading, setLoading] = useState(false);
 
   const logout = () => {
-    sessionStorage.clear();
-    window.location.pathname = "/";
+    localStorage.clear();
+    window.location.href = "/";
     dispatch({ type: "LOGOUT" });
+    setLoading(true);
   };
 
-  return { logout };
+  return { logout, loading };
 };

@@ -1,0 +1,148 @@
+.settings-container {
+  margin: 0;
+}
+
+.settings-container__wrapper {
+  margin: 0;
+  display: flex;
+  width: 100%;
+}
+
+.header_viewingsettings {
+  padding: 50px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.header_viewingsettings h3 {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.content-settings-details {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.settings-details__data {
+  padding: 0px 35px;
+}
+
+.settings-details__created,
+.settings-details__updated {
+  margin: 10px 0;
+}
+
+.setting-details__container {
+  padding: 5px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.settings-details__name {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-details__description,
+.settings-details__lastname,
+.settings-details__contactnumber,
+.settings-details__clerkrole {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.settings-details__name label,
+.settings-details__contactnumber label,
+.settings-details__lastname label,
+.settings-details__description label,
+.settings-details__clerkrole label,
+.settings-details__created label,
+.settings-details__updated label {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 2px;
+}
+
+.settings-settingdetailscontent {
+  padding: 0px 35px;
+  height: calc(75vh - 60px);
+  width: 100%;
+  margin: 10px;
+  overflow: auto;
+}
+
+.settings-details__namecontainer {
+  padding: 5px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgb(0 0 0 / 10%);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.settings-details__descriptioncontainer,
+.settings-details__contactnumcontainer,
+.settings-details__userrolecontainer {
+  padding: 5px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgb(0 0 0 / 10%);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  font-size: 15px;
+  height: 200px;
+  outline: none;
+}
+
+.settings-details__clerkcontaineremail {
+  padding: 5px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 8px 8px 16px 3px rgb(0 0 0 / 10%);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  height: 200px;
+  font-size: 15px;
+}
+
+.settings-details__descriptioncontainerinput,
+.settings-details__contactnumcontainerinput {
+  border: none;
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 15px;
+  width: 100%;
+  resize: none;
+  outline: none;
+}
+
+.settings-details__buttons {
+  display: flex;
+  justify-content: flex-end;
+  float: right;
+  width: 150px;
+}
+
+.settings-buttons__delete {
+  margin: 5px;
+}
+
+.settings-buttons__update {
+  margin: 5px 0px 5px 5px;
+}
+
+#clerkData {
+  margin: 15px 0;
+}
+
+#clerkEmail_input {
+  padding-bottom: 35px;
+}

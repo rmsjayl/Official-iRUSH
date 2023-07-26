@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/components/common/buttons.css";
+import "styles/components/common/buttons.css";
 
 const STYLE = [
   "btn--primary__solid",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "context/AuthContext";
 
 export const UseLogin = () => {
   const [error, setError] = useState("");
@@ -7,7 +7,7 @@ export const UseLogin = () => {
   const { dispatch } = useAuthContext();
 
   const login = async (email, password) => {
-    // setLoading(true);
+    setLoading(true);
     setError("");
 
     const response = await fetch(
@@ -24,11 +24,10 @@ export const UseLogin = () => {
     const json = await response.json();
 
     if (response.ok) {
-      sessionStorage.setItem("user", JSON.stringify(json.user));
-      sessionStorage.setItem("authToken", json.token);
+      localStorage.setItem("user", JSON.stringify(json.user));
+      localStorage.setItem("authToken", json.token);
 
       // set user to context
-
       dispatch({ type: "LOGIN", payload: json });
       const clerkUser = json.user;
       clerkUser.map((user) => {
@@ -40,7 +39,7 @@ export const UseLogin = () => {
         };
       });
 
-      sessionStorage.setItem("clerkRole", clerkUser[0].role);
+      localStorage.setItem("clerkRole", clerkUser[0].role);
 
       if (
         clerkUser[0].role === "USER_ADMIN" ||
@@ -57,14 +56,14 @@ export const UseLogin = () => {
         window.location = "/itsupport/dashboard";
       }
     } else {
-      // setLoading(false);
+      setLoading(false);
       setError(json.message);
     }
   };
 
   return {
     login,
-    // loading,
+    loading,
     error,
   };
 };

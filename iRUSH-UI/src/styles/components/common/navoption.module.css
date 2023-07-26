@@ -1,0 +1,37 @@
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.navigation-container h4 {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+}
+
+.component-links__menu {
+  transition: 0.2s ease;
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 19px 0;
+  font-size: 13px;
+}
+
+.component-links__menu:hover {
+  cursor: pointer;
+  color: rgba(57, 45, 45, 0.477);
+  transform: scale(1.02);
+}
+
+.active {
+  color: rgb(254, 192, 15);
+}
+
+.passive {
+  color: #000;
+}

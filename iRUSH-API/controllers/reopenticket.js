@@ -221,10 +221,10 @@ exports.requestreopenticket = async (req, res) => {
 
 //@desc:	get the user requested tickets.
 exports.getrequestedtickets = async (req, res) => {
-  const client = await Client.findOne({ _id: req.params.id });
-  const requestedTickets = await Ticket.find({ requesterId: req.params.id });
-
   try {
+    const client = await Client.findOne({ _id: req.params.id });
+    const requestedTickets = await Ticket.find({ requesterId: req.params.id });
+
     const requestToken = await RequestToken.findOne({
       clientId: client._id,
       token: req.params.token,
@@ -253,10 +253,10 @@ exports.getrequestedtickets = async (req, res) => {
 
 //@desc: 	Get the specific ticket to reopen
 exports.getreopenticket = async (req, res) => {
-  const client = await Client.findOne({ _id: req.params.id });
-  const requestedTicket = await Ticket.findOne({ _id: req.params.ticketId });
-
   try {
+    const client = await Client.findOne({ _id: req.params.id });
+    const requestedTicket = await Ticket.findOne({ _id: req.params.ticketId });
+
     if (!client) {
       return res.status(404).send({
         success: false,

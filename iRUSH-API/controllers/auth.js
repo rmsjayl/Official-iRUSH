@@ -159,7 +159,7 @@ exports.forgotpassword = async (req, res) => {
 
   try {
     if (!email)
-      return res.status(401).send({
+      return res.status(400).send({
         success: false,
         message: "Please fill all the required fields.",
       });
@@ -393,12 +393,20 @@ exports.resetpassword = async (req, res) => {
   try {
     const passwordSchema = Joi.object({
       password: passwordComplexity().required().label("Password"),
+      confirmPassword: Joi.any()
+        .equal(Joi.ref("password"))
+        .required()
+        .label("Confirm Password"),
     });
 
     const { error } = passwordSchema.validate(req.body);
 
-    if (error)
-      return res.status(400).send({ message: error.details[0].message });
+    if (error) {
+      return res.status(400).send({
+        success: false,
+        message: error.details[0].message,
+      });
+    }
 
     const user = await User.findOne({ _id: req.params.id });
     if (!user) return res.status(400).send({ message: "Link is invalid" });
@@ -418,6 +426,7 @@ exports.resetpassword = async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
     user.password = hashPassword;
+
     await user.save();
     await tokenUser.deleteOne({ _id: tokenUser._id });
 

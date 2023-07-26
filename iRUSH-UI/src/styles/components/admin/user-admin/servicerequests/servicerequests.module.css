@@ -1,0 +1,60 @@
+.content-servicerequestreport {
+  height: calc(100vh - 130px);
+  overflow: auto;
+  margin: 0px 5px;
+}
+
+.servicereport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.content-servicerequestreport__container {
+  margin: 10px 5px;
+}
+
+.content-servicerequestreport__container::-webkit-scrollbar,
+.content-servicerequestreport::-webkit-scrollbar {
+  width: 5px;
+}
+
+.content-servicerequestreport__container::-webkit-scrollbar-thumb,
+.content-servicerequestreport::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+}
+
+.servicerequestreport-header {
+  font-family: "Poppins-bold";
+  text-transform: uppercase;
+}
+
+.content-servicerequestreport__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.filtertickets-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 5px;
+}
+
+.servicerequestreport-graphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 25px 0;
+}
+
+.report-chart__SLA {
+  width: auto;
+}
+
+.report-chart__priorityandstatus {
+  display: flex;
+}

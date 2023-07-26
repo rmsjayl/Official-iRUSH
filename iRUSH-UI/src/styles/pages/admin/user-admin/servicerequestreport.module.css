@@ -1,0 +1,23 @@
+.servicerequestreport-container {
+  padding: 10px 0;
+}
+
+.servicerequestreport-container__wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.servicerequestreport-navigation {
+  width: 20%;
+}
+
+.servicerequestreport-content {
+  width: 100%;
+}
+
+.noselected-option__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

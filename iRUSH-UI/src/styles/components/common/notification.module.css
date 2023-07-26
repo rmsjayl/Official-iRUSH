@@ -1,0 +1,54 @@
+.notificationloading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.notificationloading-container h5 {
+  color: rgb(0, 0, 0, 0.5);
+}
+
+.notification-userscontainer {
+  overflow-y: scroll;
+  height: calc(100vh - 164px);
+  margin-top: 20px;
+}
+
+.notification-userscontainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notification-userscontainer::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+}
+
+.notification-users {
+  padding: 15px 20px;
+  margin: 0 20px 15px 10px;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+}
+
+.notification-ticket__details {
+  width: 100%;
+}
+.notification-ticket__ticketdetails {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.notification-ticket__tickettimestamp {
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(0, 0, 0, 0.5);
+  font-weight: 600;
+}
+
+.notification-ticket__ticketdesc {
+  padding: 20px 0;
+  font-size: 12px;
+  font-weight: 600;
+}

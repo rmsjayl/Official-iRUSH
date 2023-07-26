@@ -1,5 +1,6 @@
 import React from "react";
-import FILTERSTYLE from "../../styles/components/features/filterstyle.module.css";
+import { Autocomplete, TextField } from "@mui/material";
+import FILTERSTYLE from "styles/components/features/filterstyle.module.css";
 
 const FilterPriority = ({ priority, setPriority }) => {
   const filteroptions = [
@@ -17,26 +18,32 @@ const FilterPriority = ({ priority, setPriority }) => {
     },
   ];
 
-  const onSelectChange = ({ currentTarget: input }) => {
-    setPriority({ priority: input.value });
+  const onSelectChange = (event, value) => {
+    if (value) {
+      setPriority({ priority: value.name });
+    } else {
+      setPriority({ priority: " " });
+    }
   };
 
   return (
     <>
       <div className={FILTERSTYLE["filter-container"]}>
         <div className={FILTERSTYLE["filter-container__wrapper"]}>
-          <span> Priority: </span>
-          <select
-            className={FILTERSTYLE["filter-select"]}
+          <Autocomplete
+            size="small"
             onChange={onSelectChange}
-          >
-            <option value="All">Show All</option>
-            {filteroptions.map((option) => (
-              <option key={option.id} value={option.name}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+            options={filteroptions}
+            getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => option.name === value.name}
+            renderInput={(params) => (
+              <TextField
+                fullWidth
+                {...params}
+                label="FILTER BASED ON PRIORITY"
+              />
+            )}
+          />
         </div>
       </div>
     </>

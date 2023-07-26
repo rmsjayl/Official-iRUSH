@@ -1,36 +1,52 @@
-.ticketcontainer-tickets__ticketlists {
-  padding: 8px;
+.ticketcontainer-tickets__ticketlists,
+.servicerequestcontainer-servicerequests__servicerequestlists,
+.settingsreportcontainer-settingsreports__settingsreportlists {
+  padding: 2px;
   margin: 0px 4px;
-  overflow: auto;
-  height: calc(100vh - 420px);
 }
 
-.ticketcontainer-tickets__header > h4 {
+.reopenticketcontainer-reopenticket__header {
+  text-align: center;
+}
+
+.reopenticketcontainer-reopenticket__header > h4,
+.ticketcontainer-tickets__header > h4,
+.servicerequestcontainer-servicerequests__header > h4,
+.settingsreportcontainer-settingsreports__header > h4 {
   padding: 8px;
-  margin: 10px 4px 0;
   font-family: Poppins-bold;
 }
 
-.ticketcontainer-tickets__ticketlists::-webkit-scrollbar {
-  width: 5px;
-}
-
-.ticketcontainer-tickets__ticketlists::-webkit-scrollbar-thumb {
-  background: rgba(110, 110, 110, 0.395);
-  border-radius: 20px;
-}
-
-.ticketcontainer-filtertickets {
+.ticketcontainer-filtertickets,
+.servicerequestcontainer-filtertickets {
   display: flex;
   justify-content: space-between;
   padding: 8px;
   margin: 20px 0;
 }
 
-.table-container__tickets {
+.table-container__tickets,
+.table-container__servicerequests,
+.table-container__settingsreports {
   width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
   border-collapse: collapse;
+}
+
+.tickettable-tablebody,
+.servicerequesttable-tablebody,
+.settingsreporttable-tablebody {
+  display: block;
+  overflow: auto;
+  max-height: 25.2rem;
+  height: auto;
+}
+
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 td {
@@ -38,18 +54,23 @@ td {
   padding: 20px 0;
 }
 
-.tableticket-header {
+.tableticket-header,
+.tableservicerequest-header,
+.tablesettingsreport-header {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.tableheader-title {
+.tableheader-title,
+.reopentableheader-title {
   font-size: 11px;
   font-family: Poppins-bold;
   text-transform: uppercase;
   padding: 10px;
 }
 
-.tickettable-cell {
+.tickettable-cell,
+.servicerequesttable-cell,
+.settingsreporttable-cell {
   text-align: center;
 }
 
@@ -60,4 +81,13 @@ td {
 
 tr:nth-child(even) {
   background: rgb(254, 192, 15);
+}
+
+tbody::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 110, 0.395);
+  border-radius: 20px;
+}
+
+tbody::-webkit-scrollbar {
+  width: 6px;
 }

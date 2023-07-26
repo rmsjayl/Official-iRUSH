@@ -23,7 +23,7 @@ exports.getrequestservices = async (req, res) => {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit);
     const search = req.query.search || "";
-    let serviceCategory = req.query.category || "All";
+    let serviceCategory = req.query.serviceCategory || "All";
 
     const categorynameOptions = categoryName.map((category) => {
       return category.categoryName;
@@ -31,15 +31,18 @@ exports.getrequestservices = async (req, res) => {
 
     serviceCategory === " " || serviceCategory === "All"
       ? (serviceCategory = categorynameOptions)
-      : (serviceCategory = req.query.category.split(","));
+      : (serviceCategory = req.query.serviceCategory.split(","));
 
     const filteredServiceRequests = await Service.find({
       referenceNo: { $regex: search, $options: "i" },
       category: { $in: serviceCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -50,9 +53,12 @@ exports.getrequestservices = async (req, res) => {
       category: { $in: [...serviceCategory] },
       referenceNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1290,7 +1296,7 @@ exports.gettickets = async (req, res) => {
 
     //pagination, filtering, sorting
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit) || 8;
     const search = req.query.search || "";
     let priority = req.query.priority || "All";
     let ticketCategory = req.query.ticketCategory || "All";
@@ -1304,16 +1310,20 @@ exports.gettickets = async (req, res) => {
       ? (ticketCategory = categorynameOptions)
       : (ticketCategory = req.query.ticketCategory.split(","));
 
-    //start of date query
-
     // for sorting, filtering, and pagination
     const filteredTickets = await Ticket.find({
       ticketNo: { $regex: search, $options: "i" },
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        $gt: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lt: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
+
+        // if the createdAt is equal to the dateFrom and dateTo then return the ticket that is created on that day.
       },
     })
 
@@ -1325,9 +1335,12 @@ exports.gettickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gt: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lt: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1387,9 +1400,12 @@ exports.getreopenedticketsrequests = async (req, res) => {
       referenceNo: { $regex: search, $options: "i" },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -1400,9 +1416,12 @@ exports.getreopenedticketsrequests = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       referenceNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1530,6 +1549,10 @@ exports.assignreopenedticketrequest = async (req, res) => {
       message: "Successfully assigned the reopened ticket request.",
       ticket,
     });
+
+    //SEND EMAIL **TO DO
+
+    //REMOVE THE DATA FROM THE SERVICE REQUEST TABLE **TO DO
   } catch (error) {
     res.status(500).send({
       success: false,
@@ -1548,7 +1571,7 @@ exports.getrejectedservices = async (req, res) => {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit);
     const search = req.query.search || "";
-    let serviceCategory = req.query.category || "All";
+    let serviceCategory = req.query.serviceCategory || "All";
 
     const categorynameOptions = categoryName.map((category) => {
       return category.categoryName;
@@ -1556,15 +1579,18 @@ exports.getrejectedservices = async (req, res) => {
 
     serviceCategory === " " || serviceCategory === "All"
       ? (serviceCategory = categorynameOptions)
-      : (serviceCategory = req.query.category.split(","));
+      : (serviceCategory = req.query.serviceCategory.split(","));
 
     const filteredRejectedServiceRequests = await RejectedService.find({
       referenceNo: { $regex: search, $options: "i" },
       category: { $in: serviceCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -1575,9 +1601,12 @@ exports.getrejectedservices = async (req, res) => {
       category: { $in: [...serviceCategory] },
       referenceNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1618,7 +1647,7 @@ exports.getopentickets = async (req, res) => {
     });
     //pagination, filtering, sorting
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit) || 8;
     const search = req.query.search || "";
     let priority = req.query.priority || "All";
     let ticketCategory = req.query.ticketCategory || "All";
@@ -1639,12 +1668,14 @@ exports.getopentickets = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
-
       .skip(page * limit)
       .limit(limit);
 
@@ -1654,9 +1685,12 @@ exports.getopentickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1764,9 +1798,12 @@ exports.getoverduetickets = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -1779,9 +1816,12 @@ exports.getoverduetickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1843,9 +1883,12 @@ exports.getresolvedticket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -1858,9 +1901,12 @@ exports.getresolvedticket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -1922,9 +1968,12 @@ exports.getvoidedtickets = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -1937,9 +1986,12 @@ exports.getvoidedtickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -2001,9 +2053,12 @@ exports.getrejectedtickets = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -2016,9 +2071,12 @@ exports.getrejectedtickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -2080,9 +2138,12 @@ exports.getreopentickets = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -2095,9 +2156,12 @@ exports.getreopentickets = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -2168,7 +2232,7 @@ exports.reassignticket = async (req, res) => {
     if (!assignTo) {
       return res.status(400).send({
         success: false,
-        message: "Field is required.",
+        message: "Please assign the ticket.",
       });
     }
 
@@ -2732,7 +2796,7 @@ exports.hdsAssignedTicket = async (req, res) => {
     });
     //pagination, filtering, sorting
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit) || 8;
     const search = req.query.search || "";
     let priority = req.query.priority || "All";
     let ticketCategory = req.query.ticketCategory || "All";
@@ -2755,9 +2819,12 @@ exports.hdsAssignedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -2770,9 +2837,12 @@ exports.hdsAssignedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -2867,7 +2937,7 @@ exports.hdsAssignedOpenTicket = async (req, res) => {
     });
     //pagination, filtering, sorting
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit) || 8;
     const search = req.query.search || "";
     let priority = req.query.priority || "All";
     let ticketCategory = req.query.ticketCategory || "All";
@@ -2889,9 +2959,12 @@ exports.hdsAssignedOpenTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -2905,9 +2978,12 @@ exports.hdsAssignedOpenTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -3019,9 +3095,12 @@ exports.hdsAssignedOverdueTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -3035,9 +3114,12 @@ exports.hdsAssignedOverdueTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -3103,9 +3185,12 @@ exports.hdsAssignedResolvedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -3119,9 +3204,12 @@ exports.hdsAssignedResolvedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -3187,9 +3275,12 @@ exports.hdsAssignedRejectedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -3203,9 +3294,12 @@ exports.hdsAssignedRejectedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -3271,9 +3365,12 @@ exports.hdsAssignedReopenedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -3287,9 +3384,12 @@ exports.hdsAssignedReopenedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -4679,7 +4779,7 @@ exports.hdsAssigntoITsupport = async (req, res) => {
     if (!assignTo) {
       return res.status(400).send({
         success: false,
-        message: "Field is required.",
+        message: "Please Reassign the ticket.",
       });
     }
 
@@ -5286,9 +5386,12 @@ exports.itsAssignedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -5301,9 +5404,12 @@ exports.itsAssignedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -5420,9 +5526,12 @@ exports.itsAssignedOpenTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -5436,9 +5545,12 @@ exports.itsAssignedOpenTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -5551,9 +5663,12 @@ exports.itsAssignedOverdueTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -5567,9 +5682,12 @@ exports.itsAssignedOverdueTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -5636,9 +5754,12 @@ exports.itsAssignedResolvedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -5652,9 +5773,12 @@ exports.itsAssignedResolvedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -5720,9 +5844,12 @@ exports.itsAssignedVoidedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
@@ -5736,9 +5863,12 @@ exports.itsAssignedVoidedTicket = async (req, res) => {
       ticketCategory: { $in: [...ticketCategory] },
       ticketNo: { $regex: search, $options: "i" },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     });
 
@@ -5805,9 +5935,12 @@ exports.itsAssignedReopenedTicket = async (req, res) => {
       priority: { $in: priority },
       ticketCategory: { $in: ticketCategory },
       createdAt: {
-        // if no date is selected, it will return all the tickets created
-        $gte: req.query.dateFrom ? req.query.dateFrom : new Date(0),
-        $lte: req.query.dateTo ? req.query.dateTo : new Date(),
+        $gte: req.query.dateFrom
+          ? new Date(req.query.dateFrom) // Convert to a Date object if it exists
+          : new Date(0),
+        $lte: req.query.dateTo
+          ? new Date(new Date(req.query.dateTo).setHours(23, 59, 59, 999)) // Convert to a Date object if it exists and set to the end of the day
+          : new Date(),
       },
     })
 
